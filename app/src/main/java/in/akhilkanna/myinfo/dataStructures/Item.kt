@@ -8,6 +8,13 @@ class Item (val id: Int, val title: Title, val key: String, val value: String, v
         fun get(id: Int) : Item{
             return Item(id, 1, "key", "value", false)
         }
+
+        fun getItems(title: Title): Array<Item>{
+            return arrayOf(
+                    Item(1, title, "key1", "value1", false),
+                    Item(2, title, "key2", "value2", true)
+            )
+        }
     }
 
 }

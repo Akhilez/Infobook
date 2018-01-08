@@ -13,12 +13,12 @@
         android:layout_height="match_parent"
         android:id="@+id/main_page">
 
-        <Button
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:id="@+id/title"
-            android:text="title"
-            android:onClick="title_clicked"/>
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/titles_list">
+
+        </ListView>
 
 
     </RelativeLayout>
@@ -57,7 +57,16 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#093234">
+            android:background="#999ccc">
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/items_list">
+
+            </ListView>
+
+
         </RelativeLayout>
 
     </com.wunderlist.slidinglayer.SlidingLayer>

@@ -1,0 +1,30 @@
+<RelativeLayout android:layout_height="100dp"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/keyText"
+        android:text="abcd"/>
+
+    <TextView
+        android:id="@+id/valueText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/hideButton"
+        android:layout_alignBottom="@+id/hideButton"
+        android:layout_marginStart="39dp"
+        android:layout_toEndOf="@+id/keyText"
+        android:text="abcd" />
+
+    <Button
+        android:id="@+id/hideButton"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="88dp"
+        android:layout_toEndOf="@+id/keyText"
+        android:text="show" />
+
+</RelativeLayout>

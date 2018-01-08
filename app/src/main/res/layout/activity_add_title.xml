@@ -13,42 +13,40 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="88dp"
+        android:layout_marginTop="92dp"
         android:ems="10"
+        android:hint="ex: SBI Bank, Aadhar Card"
         android:inputType="textPersonName"
         tools:layout_editor_absoluteX="85dp"
         tools:layout_editor_absoluteY="88dp" />
-
-    <CheckBox
-        android:id="@+id/checkBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="206dp"
-        tools:layout_editor_absoluteX="144dp"
-        tools:layout_editor_absoluteY="165dp" />
-
-    <EditText
-        android:id="@+id/editText2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="183dp"
-        android:ems="10"
-        android:inputType="numberPassword"
-        tools:layout_editor_absoluteX="84dp"
-        tools:layout_editor_absoluteY="220dp" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="48dp"
-        android:layout_toEndOf="@+id/editText"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="23dp"
+        android:layout_marginEnd="21dp"
         android:clickable="true"
-        android:onClick="add_title"
+        android:onClick="addTitle"
         app:srcCompat="@android:drawable/ic_menu_save" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/name_text"
+        android:layout_alignBottom="@+id/name_text"
+        android:layout_toStartOf="@+id/name_text"
+        android:text="Title" />
+
+    <Switch
+        android:id="@+id/is_protected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/name_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="67dp"
+        android:text="protected" />
 </RelativeLayout>
