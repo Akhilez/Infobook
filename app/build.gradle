@@ -9,7 +9,7 @@ android {
     buildToolsVersion '27.0.1'
     defaultConfig {
         applicationId "in.akhilkanna.myinfo"
-        minSdkVersion 21
+        minSdkVersion 22
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -35,4 +35,5 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
     compile 'com.wunderlist:sliding-layer:1.2.5'
+
 }

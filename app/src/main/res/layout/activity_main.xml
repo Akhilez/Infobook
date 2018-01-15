@@ -1,33 +1,353 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="in.akhilkanna.myinfo.MainActivity">
 
-    <android.support.design.widget.AppBarLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:id="@+id/main_parent"
+        android:layout_height="match_parent">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
 
-    </android.support.design.widget.AppBarLayout>
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+        </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+        <RelativeLayout
+            android:id="@+id/main_page"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/appbar">
+
+
+            <ListView
+                android:id="@+id/titles_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </ListView>
+
+
+        </RelativeLayout>
+
+        <com.wunderlist.slidinglayer.SlidingLayer xmlns:slidingLayer="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/login_sliding_layer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="7dp"
+            slidingLayer:changeStateOnTap="false"
+            slidingLayer:shadowSize="250dp"
+            slidingLayer:stickTo="bottom">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:elevation="7dp"
+                android:background="#0eca93">
+
+                <RelativeLayout
+                    android:id="@+id/pinsLayout"
+                    android:layout_width="300dp"
+                    android:layout_height="330dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="30dp">
+
+
+                    <RelativeLayout
+                        android:id="@+id/pinDots"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp">
+
+                        <ImageView
+                            android:id="@+id/dot1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:tintMode="multiply"
+                            android:tint="#666666"
+                            android:layout_alignParentTop="true"
+                            android:contentDescription="pinDot"
+                            android:padding="10dp"
+                            android:paddingStart="60dp"
+                            android:src="@drawable/circle_dot"
+                            android:tag="0" />
+
+                        <ImageView
+                            android:id="@+id/dot2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentTop="true"
+                            android:tintMode="multiply"
+                            android:tint="#666666"
+                            android:layout_toEndOf="@+id/dot1"
+                            android:contentDescription="pinDot"
+                            android:padding="10dp"
+                            android:src="@drawable/circle_dot"
+                            android:tag="0" />
+
+                        <ImageView
+                            android:id="@+id/dot3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentTop="true"
+                            android:tint="#666666"
+                            android:layout_toEndOf="@+id/dot2"
+                            android:contentDescription="pinDot"
+                            android:tintMode="multiply"
+                            android:padding="10dp"
+                            android:src="@drawable/circle_dot"
+                            android:tag="0" />
+
+                        <ImageView
+                            android:id="@+id/dot4"
+                            android:layout_width="wrap_content"
+                            android:tint="#666666"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentTop="true"
+                            android:tintMode="multiply"
+                            android:layout_toEndOf="@+id/dot3"
+                            android:contentDescription="pinDot"
+                            android:padding="10dp"
+                            android:paddingEnd="60dp"
+                            android:src="@drawable/circle_dot"
+                            android:tag="0" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/pin1"
+                        android:layout_width="100dp"
+                        android:layout_height="70dp"
+                        android:layout_below="@+id/pinDots"
+                        android:foreground="?attr/selectableItemBackground">
+
+                        <TextView
+                            android:id="@+id/pin1Text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="1" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/pin2"
+                        android:layout_width="100dp"
+                        android:layout_height="70dp"
+                        android:layout_below="@+id/pinDots"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:layout_centerHorizontal="true">
+
+                        <TextView
+                            android:id="@+id/pin2Text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="2" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/pin3"
+                        android:layout_width="100dp"
+                        android:layout_height="70dp"
+                        android:layout_alignParentEnd="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:layout_below="@+id/pinDots">
+
+                        <TextView
+                            android:id="@+id/pin3Text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="3" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/pin4"
+                        android:layout_width="100dp"
+                        android:layout_height="70dp"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:layout_below="@+id/pin1">
+
+                        <TextView
+                            android:id="@+id/pin4Text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="4" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/pin5"
+                        android:layout_width="100dp"
+                        android:layout_height="70dp"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:layout_below="@+id/pin1"
+                        android:layout_centerHorizontal="true">
+
+                        <TextView
+                            android:id="@+id/pin5Text"
+                            android:layout_width="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_height="wrap_content"
+                            android:text="5" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/pin6"
+                        android:layout_width="100dp"
+                        android:layout_height="70dp"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@+id/pin1">
+
+                        <TextView
+                            android:id="@+id/pin6Text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="6" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/pin7"
+                        android:layout_width="100dp"
+                        android:layout_height="70dp"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:layout_below="@+id/pin4">
+
+                        <TextView
+                            android:id="@+id/pin7Text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="7" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/pin8"
+                        android:layout_width="100dp"
+                        android:layout_height="70dp"
+                        android:layout_below="@+id/pin4"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:layout_centerHorizontal="true">
+
+                        <TextView
+                            android:id="@+id/pin8Text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="8" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/pin9"
+                        android:layout_width="100dp"
+                        android:layout_height="70dp"
+                        android:layout_alignParentEnd="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:layout_below="@+id/pin4">
+
+                        <TextView
+                            android:id="@+id/pin9Text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="9" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/pin0"
+                        android:layout_width="100dp"
+                        android:layout_height="70dp"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:layout_below="@+id/pin7"
+                        android:layout_centerHorizontal="true">
+
+                        <TextView
+                            android:id="@+id/pin0Text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="0" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/pinBack"
+                        android:layout_width="100dp"
+                        android:layout_height="70dp"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@+id/pin9">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="Del" />
+                    </RelativeLayout>
+
+
+                </RelativeLayout>
+
+
+            </RelativeLayout>
+
+        </com.wunderlist.slidinglayer.SlidingLayer>
+
+        <com.wunderlist.slidinglayer.SlidingLayer xmlns:slidingLayer="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/items_sliding_layer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="5dp"
+            slidingLayer:changeStateOnTap="false"
+            slidingLayer:stickTo="right">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#999ccc">
+
+                <ListView
+                    android:id="@+id/items_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                </ListView>
+
+            </RelativeLayout>
+
+        </com.wunderlist.slidinglayer.SlidingLayer>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="26dp"
+            android:layout_marginEnd="26dp"
+            app:srcCompat="@android:drawable/ic_dialog_email" />
+
+    </RelativeLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nvView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:menu="@menu/main_nav" />
 
-</android.support.design.widget.CoordinatorLayout>
+</android.support.v4.widget.DrawerLayout>

@@ -20,8 +20,9 @@ class Title (val id: Int, val title: String, val isProtected: Boolean) {
         }
         fun getAll() : Array<Title> {
             return arrayOf(
-                Title(1, "test1", false),
-                Title(2, "test2", true)
+                Title(1, "SBI Bank", true),
+                Title(2, "Aadhar", false),
+                Title(3, "HDFC Bank", true)
             )
         }
     }
