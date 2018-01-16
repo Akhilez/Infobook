@@ -19,9 +19,9 @@ class AddTitle : AppCompatActivity() {
 
     fun addTitle(view: View){
         if (!name_text.text.isEmpty()){
-            val title = Title(Title.nextId(), name_text.text.toString(), is_protected.isChecked)
-            val status = title.commit()
-            if (status != null) Snackbar.make(view , status, Snackbar.LENGTH_LONG).show()
+            val title = Title.create(this, name_text.text.toString(), is_protected.isChecked)
+            val status = if (title != null) "Title Added" else "Failed"
+            Snackbar.make(view , status, Snackbar.LENGTH_LONG).show()
         }
         else {
             Snackbar.make(view , "Please Enter the title.", Snackbar.LENGTH_LONG).show()

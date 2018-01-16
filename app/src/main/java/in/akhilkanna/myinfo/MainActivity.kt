@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setUpSlidingLayers() {
-        val titles = Title.getAll()
+        val titles = Title.getAll(this)
 
         val adapter = TitlesAdapter(titles, this)
 
@@ -159,7 +159,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun buildItemsLayer(title: Title) {
-        val items = Item.getItems(title)
+        val items = Item.getItems(this, title)
         val adapter = ItemsAdapter(items, this)
 
         items_list.adapter = adapter

@@ -1,5 +1,8 @@
 package `in`.akhilkanna.myinfo.dataStructures
 
+import `in`.akhilkanna.myinfo.db.SqliteHelper
+import android.content.Context
+
 class Title (val id: Int, val title: String, val isProtected: Boolean) {
 
     fun commit(): String?{
@@ -10,20 +13,33 @@ class Title (val id: Int, val title: String, val isProtected: Boolean) {
         return title
     }
 
-
     companion object {
+        val TABLE_NAME = "title"
+        val ID = "id"
+        val TITLE = "title"
+        val PROTECTED = "protected"
+
         fun get(id: Int) : Title{
             return Title(id, "test", false)
         }
-        fun nextId () : Int {
-            return 0
+        fun create (context: Context, title: String, isProtected: Boolean) : Title? {
+            val helper = SqliteHelper(context)
+            val isInserted = helper.insertRow(TABLE_NAME, hashMapOf(TITLE to title, PROTECTED to if (isProtected) "1" else "0"))
+            if (isInserted) {
+                val retrievedTitle = helper.retrieveFields(TABLE_NAME, "where $TITLE = \"$title\"", ID, TITLE, PROTECTED)
+                if (retrievedTitle.size == 0) return null
+                return Title(retrievedTitle[0][ID] as Int, retrievedTitle[0][TITLE] as String, retrievedTitle[0][PROTECTED] as Int != 0)
+            } else {
+                return null
+            }
         }
-        fun getAll() : Array<Title> {
-            return arrayOf(
-                Title(1, "SBI Bank", true),
-                Title(2, "Aadhar", false),
-                Title(3, "HDFC Bank", true)
-            )
+        fun getAll(context: Context) : Array<Title> {
+            val helper = SqliteHelper(context)
+            val queryResult = helper.retrieveFields(TABLE_NAME, null, ID, TITLE, PROTECTED)
+            return Array(queryResult.size, { i ->
+                val row = queryResult[i]
+                Title(row[ID] as Int, row[TITLE] as String, row[PROTECTED] as Int != 0)
+            })
         }
     }
 
