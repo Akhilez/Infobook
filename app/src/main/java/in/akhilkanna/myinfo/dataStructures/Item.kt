@@ -3,9 +3,12 @@ package `in`.akhilkanna.myinfo.dataStructures
 import `in`.akhilkanna.myinfo.db.SqliteHelper
 import android.content.Context
 
-class Item (val id: Int, val title: Title, val key: String, val value: String, val hidden: Boolean) {
+class Item (val id: Int, val title: Title, var key: String, var value: String, var hidden: Boolean) {
 
-    constructor(id: Int, titleId: Int, key: String, value: String, hidden: Boolean) : this(id, Title.get(titleId), key, value, hidden)
+    fun commit(context: Context) : Boolean {
+        // TODO write this
+        return false
+    }
 
     companion object {
         val TABLE_NAME = "item"
@@ -22,6 +25,16 @@ class Item (val id: Int, val title: Title, val key: String, val value: String, v
                 val row = queryResult[i]
                 Item(row[ID] as Int, title, row[KEY] as String, row[VALUE] as String, row[HIDDEN] as Int != 0)
             })
+        }
+
+        fun get (context: Context, itemId: Int) : Item? {
+            val helper = SqliteHelper(context)
+            val queryResult = helper.retrieveFields(TABLE_NAME, "where $ID = $itemId", ID, TITLE_ID, KEY, VALUE, HIDDEN)
+            if (queryResult.isNotEmpty()) {
+                val row = queryResult[0]
+                return Item(row[ID] as Int, Title.get(context, row[TITLE_ID] as Int)!!, row[KEY] as String, row[VALUE] as String, row[HIDDEN] as Int != 0)
+            }
+            return null
         }
 
         fun create(context: Context, title: Title, key: String, value: String, hidden: Boolean): Item? {

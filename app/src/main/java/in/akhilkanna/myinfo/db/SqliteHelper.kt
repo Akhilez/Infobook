@@ -77,6 +77,7 @@ class SqliteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
         }
     }
 
-
+    //fun updateRow (tableName: String, )
+    // TODO update title set title = "ABC", protected = 1 where id = 2;
 
 }

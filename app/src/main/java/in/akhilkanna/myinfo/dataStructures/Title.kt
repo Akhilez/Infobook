@@ -3,10 +3,11 @@ package `in`.akhilkanna.myinfo.dataStructures
 import `in`.akhilkanna.myinfo.db.SqliteHelper
 import android.content.Context
 
-class Title (val id: Int, val title: String, val isProtected: Boolean) {
+class Title (val id: Int, var title: String, var isProtected: Boolean) {
 
-    fun commit(): String?{
-        return "Failed"
+    fun commit(context: Context): Boolean {
+        return false
+        // TODO write this
     }
 
     override fun toString(): String {
@@ -19,8 +20,14 @@ class Title (val id: Int, val title: String, val isProtected: Boolean) {
         val TITLE = "title"
         val PROTECTED = "protected"
 
-        fun get(id: Int) : Title{
-            return Title(id, "test", false)
+        fun get(context: Context, id: Int) : Title? {
+            val helper = SqliteHelper(context)
+            val queryResult = helper.retrieveFields(TABLE_NAME, "where $ID = $id", ID, TITLE, PROTECTED)
+            if (queryResult.isNotEmpty()) {
+                val row = queryResult[0]
+                return Title(row[ID] as Int, row[TITLE] as String, row[PROTECTED] as Int != 0)
+            }
+            return null
         }
         fun create (context: Context, title: String, isProtected: Boolean) : Title? {
             val helper = SqliteHelper(context)

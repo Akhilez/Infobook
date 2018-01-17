@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/adding_title_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddTitle">
+    tools:showIn="@layout/activity_adding"
+    tools:context="in.akhilkanna.myinfo.fragments.adding.AddingTitleFragment">
 
 
     <EditText
@@ -19,18 +21,6 @@
         android:inputType="textPersonName"
         tools:layout_editor_absoluteX="85dp"
         tools:layout_editor_absoluteY="88dp" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="23dp"
-        android:layout_marginEnd="21dp"
-        android:clickable="true"
-        android:onClick="addTitle"
-        app:srcCompat="@android:drawable/ic_menu_save" />
 
     <TextView
         android:id="@+id/textView"
@@ -49,4 +39,14 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="67dp"
         android:text="protected" />
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/save_title_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@android:drawable/ic_dialog_email" />
+
 </RelativeLayout>

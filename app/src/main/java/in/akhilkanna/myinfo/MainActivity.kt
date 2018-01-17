@@ -32,7 +32,11 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         fab.setOnClickListener { view ->
-            startActivity(Intent(MainActivity@this, AddTitle::class.java))
+            val adderIntent =Intent(MainActivity@this, AddingActivity::class.java)
+            if (items_sliding_layer.isOpened && titleClicked != null){
+                adderIntent.putExtra("title", titleClicked?.id)
+            }
+            startActivity(adderIntent)
         }
 
         setUpSlidingLayers()
