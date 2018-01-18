@@ -30,12 +30,15 @@ class AddingTitleFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_adding_title, container, false)
 
-        val editingTitleId = arguments.getInt("editingTitle", -1)
-        if (editingTitleId != -1) {
-            editingTitle = Title.get(context, editingTitleId)
+        val arguments = arguments
+        if (arguments != null) {
+            val editingTitleId = arguments.getInt("editingTitle", -1)
+            if (editingTitleId != -1) {
+                editingTitle = Title.get(context, editingTitleId)
+            }
         }
 
-        save_title_fab.setOnClickListener {
+        rootView.save_title_fab.setOnClickListener {
             if (!rootView.name_text.text.isEmpty()){
 
                 if (editMode && editingTitle != null) {

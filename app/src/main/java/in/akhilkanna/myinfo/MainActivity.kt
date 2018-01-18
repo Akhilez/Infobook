@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.title_layout.view.*
 
 class MainActivity : AppCompatActivity() {
     private val pin = Pin(this@MainActivity)
-    var titleClicked : Title? = null
+    private var titleClicked : Title? = null
     private var pinValidated: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {

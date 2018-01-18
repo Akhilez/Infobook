@@ -31,7 +31,7 @@ class Title (val id: Int, var title: String, var isProtected: Boolean) {
         }
         fun create (context: Context, title: String, isProtected: Boolean) : Title? {
             val helper = SqliteHelper(context)
-            val isInserted = helper.insertRow(TABLE_NAME, hashMapOf(TITLE to title, PROTECTED to if (isProtected) "1" else "0"))
+            val isInserted = helper.insertRow(TABLE_NAME, hashMapOf(TITLE to "\"$title\"", PROTECTED to if (isProtected) "1" else "0"))
             if (isInserted) {
                 val retrievedTitle = helper.retrieveFields(TABLE_NAME, "where $TITLE = \"$title\"", ID, TITLE, PROTECTED)
                 if (retrievedTitle.size == 0) return null

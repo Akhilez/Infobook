@@ -36,7 +36,7 @@ class Pin (private val context: Context) {
     }
 
     private fun getRegisteredPin(): String {
-        return context.getSharedPreferences("Common", Context.MODE_PRIVATE).getString("pin", null)
+        return context.getSharedPreferences("Common", Context.MODE_PRIVATE).getString("pin", "1234")
     }
 
     private fun pinString(): String {
@@ -44,7 +44,7 @@ class Pin (private val context: Context) {
     }
 
     private fun pinExists(): Boolean {
-        return context.getSharedPreferences("Common", Context.MODE_PRIVATE).getString("pin", null) != null
+        return context.getSharedPreferences("Common", Context.MODE_PRIVATE).getString("pin", "") != ""
 
         /*
         if (pin == null){

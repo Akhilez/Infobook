@@ -27,7 +27,7 @@ class SqliteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL("create table ${Title.TABLE_NAME} (${Title.ID} integer primary key autoincrement, ${Title.TITLE} varchar unique, ${Title.PROTECTED} int default 0)")
-        db.execSQL("create table ${Item.TABLE_NAME} ( ${Item.ID} integer primary key autoincrement, ${Item.TITLE_ID} int references ${Title.TABLE_NAME}.${Title.ID}, ${Item.KEY} varchar, ${Item.VALUE} varchar, ${Item.HIDDEN} int default 0, primary key(${Item.ID}, ${Item.KEY}) )")
+        db.execSQL("create table ${Item.TABLE_NAME} ( ${Item.ID} integer primary key autoincrement, ${Item.TITLE_ID} int references ${Title.TABLE_NAME}(${Title.ID}), ${Item.DESC} varchar, ${Item.VALUE} varchar, ${Item.HIDDEN} int default 0, unique (${Item.TITLE_ID}, ${Item.DESC}) on conflict replace)")
     }
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         db.execSQL("drop table if exists ${Title.TABLE_NAME}")
@@ -59,6 +59,7 @@ class SqliteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
                 row.put(field, value)
             }
             resultTable.add(row)
+            result.moveToNext()
         }
         result.close()
         db.close()

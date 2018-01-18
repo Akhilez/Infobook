@@ -1,16 +1,12 @@
 package `in`.akhilkanna.myinfo
 
-import `in`.akhilkanna.myinfo.dataStructures.Item
 import `in`.akhilkanna.myinfo.dataStructures.Title
 import `in`.akhilkanna.myinfo.fragments.adding.AddingItemFragment
 import `in`.akhilkanna.myinfo.fragments.adding.AddingTitleFragment
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
-
 import kotlinx.android.synthetic.main.activity_adding.*
 
 class AddingActivity : AppCompatActivity(), AddingTitleFragment.TitleCreationListener {
@@ -43,21 +39,23 @@ class AddingActivity : AppCompatActivity(), AddingTitleFragment.TitleCreationLis
             val bundle = Bundle()
             if (editingItem != -1)
                 bundle.putInt("editingItem", editingItem)
-            else
-                bundle.putInt("titleId", titleId)
+            bundle.putInt("titleId", titleId)
             fragment.arguments = bundle
 
         }
-
-        fragmentTransaction?.add(R.id.fragment, fragment)
-        fragmentTransaction?.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
-
-
+        fragmentTransaction?.add(R.id.fragmentContainer, fragment)
         fragmentTransaction?.commit()
 
     }
+
     override fun onTitleCreated(title: Title) {
-        fragmentTransaction?.replace(R.id.fragment, AddingItemFragment(), title.id.toString())
+        val fragment = AddingItemFragment()
+        val bundle = Bundle()
+        bundle.putInt("titleId", title.id)
+        fragment.arguments = bundle
+        fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction?.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+        fragmentTransaction?.replace(R.id.fragmentContainer, fragment)
         fragmentTransaction?.commit()
     }
 }

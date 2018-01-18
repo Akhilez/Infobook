@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_adding_item.*
+import kotlinx.android.synthetic.main.fragment_adding_item.view.*
 
 /**
  * Created by akhil.devarashetti on 1/16/2018.
@@ -17,26 +18,31 @@ import kotlinx.android.synthetic.main.fragment_adding_item.*
  */
 
 class AddingItemFragment : Fragment() {
-    var editMode = false
-    var editItem : Item? = null
+    private var editMode = false
+    private var editItem : Item? = null
     var title : Title? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_adding_item, container, false)
 
-        val titleId = arguments.getInt("itemId", -1)
-        if (titleId != -1)
-            title = Title.get(context, titleId)
+        val arguments = arguments
+        if (arguments != null) {
+            val titleId = arguments.getInt("titleId", -1)
+            if (titleId != -1) {
+                title = Title.get(context, titleId)
+                rootView.titleHeading.text = title?.title
+            }
 
-        val editingItem = arguments.getInt("editingItem", -1)
-        editMode = editingItem != -1
+            val editingItem = arguments.getInt("editingItem", -1)
+            editMode = editingItem != -1
 
-        if (editMode){
-            editItem = Item.get(context, editingItem)
-            addDataToUI(editItem!!)
+            if (editMode) {
+                editItem = Item.get(context, editingItem)
+                addDataToUI(editItem!!)
+            }
         }
 
-        save_item_fab.setOnClickListener {
+        rootView.save_item_fab.setOnClickListener {
             val errorMsg = getErrorMessage()
             if (errorMsg != null) {
                 Snackbar.make(rootView, errorMsg, Snackbar.LENGTH_LONG).show()
