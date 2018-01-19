@@ -21,6 +21,7 @@
         </activity>
         <activity
             android:name=".AddingActivity"
+            android:windowSoftInputMode="stateVisible"
             android:label="@string/title_activity_adding"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>

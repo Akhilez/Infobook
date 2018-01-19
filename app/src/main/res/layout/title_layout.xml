@@ -10,6 +10,11 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="31dp"
         android:text="Title"
+        android:textColor="#fff"
+        android:shadowColor="#000"
+        android:shadowDx="0.9"
+        android:shadowDy="0.9"
+        android:shadowRadius="1"
         android:textSize="18sp" />
 
 </RelativeLayout>

@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
 
         fab.setOnClickListener { view ->
             val adderIntent =Intent(MainActivity@this, AddingActivity::class.java)
@@ -50,6 +49,14 @@ class MainActivity : AppCompatActivity() {
         if (level == ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN) {
             // Get called every-time when application went to background.
             pinValidated = false
+        }
+    }
+
+    override fun onBackPressed() {
+        when {
+            login_sliding_layer.isOpened -> login_sliding_layer.closeLayer(true)
+            items_sliding_layer.isOpened -> items_sliding_layer.closeLayer(true)
+            else -> super.onBackPressed()
         }
     }
 
@@ -115,40 +122,40 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun highlightDot(highlight: Boolean) {
-        val highlightColor = Color.parseColor("#000999")
-        val dimColor = Color.parseColor("#666666")
+        val highlightColor = R.drawable.ic_lens_black_24dp
+        val dimColor = R.drawable.ic_panorama_fish_eye_black_24dp
         if (dot4.tag == "1") {
             if (!highlight) {
                 dot4.tag = "0"
-                dot4.setColorFilter(dimColor, PorterDuff.Mode.MULTIPLY)
+                dot4.setImageResource(dimColor)
             }
         } else if (dot3.tag == "1") {
             if (highlight) {
                 dot4.tag = "1"
-                dot4.setColorFilter(highlightColor, PorterDuff.Mode.MULTIPLY)
+                dot4.setImageResource(highlightColor)
             } else {
                 dot3.tag = "0"
-                dot3.setColorFilter(dimColor, PorterDuff.Mode.MULTIPLY)
+                dot3.setImageResource(dimColor)
             }
         } else if (dot2.tag == "1") {
             if (highlight) {
                 dot3.tag = "1"
-                dot3.setColorFilter(highlightColor, PorterDuff.Mode.MULTIPLY)
+                dot3.setImageResource(highlightColor)
             } else {
                 dot2.tag = "0"
-                dot2.setColorFilter(dimColor, PorterDuff.Mode.MULTIPLY)
+                dot2.setImageResource(dimColor)
             }
         } else if (dot1.tag == "1") {
             if (highlight) {
                 dot2.tag = "1"
-                dot2.setColorFilter(highlightColor, PorterDuff.Mode.MULTIPLY)
+                dot2.setImageResource(highlightColor)
             } else {
                 dot1.tag = "0"
-                dot1.setColorFilter(dimColor, PorterDuff.Mode.MULTIPLY)
+                dot1.setImageResource(dimColor)
             }
         } else if (highlight) {
             dot1.tag = "1"
-            dot1.setColorFilter(highlightColor, PorterDuff.Mode.MULTIPLY)
+            dot1.setImageResource(highlightColor)
         }
     }
 

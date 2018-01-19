@@ -17,8 +17,10 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="92dp"
         android:ems="10"
+        android:maxLines="1"
+        android:minWidth="250dp"
         android:hint="ex: SBI Bank, Aadhar Card"
-        android:inputType="textPersonName"
+        android:inputType="text"
         tools:layout_editor_absoluteX="85dp"
         tools:layout_editor_absoluteY="88dp" />
 
@@ -50,6 +52,6 @@
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="35dp"
         android:layout_marginEnd="14dp"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        android:src="@drawable/ic_done_white_24dp" />
 
 </RelativeLayout>

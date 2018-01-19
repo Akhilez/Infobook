@@ -27,9 +27,12 @@
 
     <EditText
         android:id="@+id/item_key_edit_text"
-        android:layout_width="200dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:minWidth="250dp"
         android:layout_below="@+id/titleHeading"
+        android:maxLines="1"
+        android:inputType="text"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="28dp"
         android:hint="Ex: AccNo, IFSC Code" />
@@ -44,8 +47,11 @@
 
     <EditText
         android:id="@+id/item_value_edit_text"
-        android:layout_width="200dp"
+        android:maxLines="1"
+        android:inputType="text"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:minWidth="250dp"
         android:layout_alignStart="@+id/item_key_edit_text"
         android:layout_below="@+id/item_key_edit_text"
         android:layout_marginTop="21dp" />
@@ -69,7 +75,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="40dp"
         android:layout_marginEnd="22dp"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        android:src="@drawable/ic_done_white_24dp" />
 
 
 
