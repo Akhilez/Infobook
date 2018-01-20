@@ -12,12 +12,15 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.*
+import android.widget.AbsListView
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.wunderlist.slidinglayer.SlidingLayer
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.item_layout.view.*
+import kotlinx.android.synthetic.main.items_layer.*
+import kotlinx.android.synthetic.main.items_layer.view.*
 import kotlinx.android.synthetic.main.title_layout.view.*
 
 
@@ -97,6 +100,7 @@ class MainActivity : AppCompatActivity() {
             override fun onShowPreview() {}
             override fun onClose() {}
         })
+
     }
 
     private fun setUpPinButtons(){
@@ -172,9 +176,8 @@ class MainActivity : AppCompatActivity() {
     private fun buildItemsLayer(title: Title) {
         val items = Item.getItems(this, title)
         val adapter = ItemsAdapter(items, this)
-
+        titleHeading.text = title.title
         items_list.adapter = adapter
-
         items_list.onItemClickListener = AdapterView.OnItemClickListener{ adapterView: AdapterView<*>, view: View, position: Int, id: Long ->
             Snackbar.make(view, items[position].key, Snackbar.LENGTH_LONG).show()
         }
