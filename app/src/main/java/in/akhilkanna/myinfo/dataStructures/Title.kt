@@ -14,11 +14,19 @@ class Title (val id: Int, var title: String, var isProtected: Boolean) {
         return title
     }
 
+    override fun equals(other: Any?): Boolean {
+        return title == (other as Title).title
+    }
+
+    override fun hashCode(): Int {
+        return title.hashCode()
+    }
+
     companion object {
-        val TABLE_NAME = "title"
-        val ID = "id"
-        val TITLE = "title"
-        val PROTECTED = "protected"
+        const val TABLE_NAME = "title"
+        const val ID = "id"
+        const val TITLE = "title"
+        const val PROTECTED = "protected"
 
         fun get(context: Context, id: Int) : Title? {
             val helper = SqliteHelper(context)

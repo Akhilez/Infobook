@@ -13,67 +13,57 @@
         android:layout_height="match_parent">
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="35dp"
-            android:id="@+id/appbar">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/app_name"
-                android:textColor="#fff"
-                android:textSize="24sp"
-                android:shadowColor="#000"
-                android:shadowDx="0.9"
-                android:shadowDy="0.9"
-                android:shadowRadius="1"
-                android:fontFamily="cursive"
-                android:layout_marginLeft="30dp"
-                android:layout_centerVertical="true" />
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:id="@+id/toolbarButtons"
-                android:visibility="invisible"
-                android:layout_alignParentEnd="true">
-
-
-                <ImageView
-                    android:layout_width="54dp"
-                    android:layout_height="match_parent"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
-                    android:id="@+id/edit_icon"
-                    android:layout_toEndOf="@+id/delete_icon"
-                    android:src="@drawable/ic_create_white_24dp"/>
-
-                <ImageView
-                    android:layout_width="54dp"
-                    android:layout_height="match_parent"
-                    android:padding="15dp"
-                    android:id="@+id/delete_icon"
-                    android:src="@drawable/ic_delete_white_24dp"/>
-
-
-
-            </RelativeLayout>
-
-        </RelativeLayout>
-
-        <RelativeLayout
             android:id="@+id/main_page"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/appbar">
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="35dp"
+                android:id="@+id/appbar">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/app_name"
+                    android:textColor="#fff"
+                    android:textSize="24sp"
+                    android:shadowColor="#000"
+                    android:shadowDx="0.9"
+                    android:shadowDy="0.9"
+                    android:shadowRadius="1"
+                    android:fontFamily="cursive"
+                    android:layout_marginStart="30dp"
+                    android:layout_centerVertical="true" />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/toolbarButtons"
+                    android:visibility="visible"
+                    android:layout_alignParentEnd="true">
+
+                    <ImageView
+                        android:layout_width="54dp"
+                        android:layout_height="match_parent"
+                        android:padding="15dp"
+                        android:id="@+id/lock_icon"
+                        android:src="@drawable/ic_lock_open_white_24dp"
+                        android:onClick="lockAll"
+                        android:visibility="gone"/>
+
+
+
+                </RelativeLayout>
+
+            </RelativeLayout>
 
             <ListView
                 android:id="@+id/titles_list"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
+                android:layout_below="@+id/appbar"
                 android:divider="#80515151"
                 android:dividerHeight="0.5dp" />
 
@@ -110,12 +100,9 @@
 
                         <ImageView
                             android:id="@+id/dot1"
-                            android:layout_width="wrap_content"
+                            android:layout_width="@dimen/pin_dot_width"
                             android:layout_height="match_parent"
-                            android:tintMode="multiply"
-                            android:tint="#666666"
                             android:layout_centerInParent="true"
-                            android:padding="10dp"
                             android:src="@drawable/ic_panorama_fish_eye_black_24dp"
                             android:tag="0" />
 
@@ -131,14 +118,11 @@
 
                         <ImageView
                             android:id="@+id/dot2"
-                            android:layout_width="wrap_content"
+                            android:layout_width="@dimen/pin_dot_width"
                             android:layout_height="match_parent"
                             android:layout_centerInParent="true"
-                            android:padding="10dp"
                             android:src="@drawable/ic_panorama_fish_eye_black_24dp"
-                            android:tag="0"
-                            android:tint="#666666"
-                            android:tintMode="multiply" />
+                            android:tag="0"/>
 
                     </RelativeLayout>
 
@@ -152,10 +136,9 @@
 
                         <ImageView
                             android:id="@+id/dot3"
-                            android:layout_width="wrap_content"
+                            android:layout_width="@dimen/pin_dot_width"
                             android:layout_height="match_parent"
                             android:layout_centerInParent="true"
-                            android:padding="10dp"
                             android:src="@drawable/ic_panorama_fish_eye_black_24dp"
                             android:tag="0" />
 
@@ -171,10 +154,9 @@
 
                         <ImageView
                             android:id="@+id/dot4"
-                            android:layout_width="wrap_content"
+                            android:layout_width="@dimen/pin_dot_width"
                             android:layout_height="match_parent"
                             android:layout_centerInParent="true"
-                            android:padding="10dp"
                             android:src="@drawable/ic_panorama_fish_eye_black_24dp"
                             android:tag="0" />
 
@@ -345,11 +327,12 @@
                         android:layout_alignParentEnd="true"
                         android:layout_below="@+id/pin9">
 
-                        <TextView
+                        <ImageView
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_centerInParent="true"
-                            android:text="Del" />
+                            android:src="@drawable/ic_backspace_black_24dp"/>
+
                     </RelativeLayout>
 
 
@@ -368,7 +351,12 @@
             slidingLayer:changeStateOnTap="false"
             slidingLayer:stickTo="left">
 
-            <include layout="@layout/items_layer" />
+            <fragment
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/items_fragment"
+                android:name="in.akhilkanna.myinfo.fragments.ItemsFragment"
+                />
 
         </com.wunderlist.slidinglayer.SlidingLayer>
 
@@ -379,6 +367,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_gravity="bottom|end"
+            android:onClick="fabClicked"
             android:layout_marginBottom="26dp"
             android:layout_marginEnd="26dp"
             android:src="@drawable/ic_add_white_24dp" />

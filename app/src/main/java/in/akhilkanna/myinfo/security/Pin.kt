@@ -6,8 +6,9 @@ import android.content.Context
 
 class Pin (private val context: Context) {
 
-    private var pin = IntArray(4)
+    private val pin = IntArray(4)
     private var length = 0
+    private var pinValidated: Boolean = false
 
     fun enter(number: Int): Boolean {
         if (length == 4) return false
@@ -18,9 +19,12 @@ class Pin (private val context: Context) {
         return false
     }
 
-    fun destroy(){
+    fun lock(){
         length = 0
+        pinValidated = false
     }
+
+    fun destroy() { length = 0 }
 
     fun back() {
         if (length > 0)
@@ -31,17 +35,18 @@ class Pin (private val context: Context) {
         return length
     }
 
+    fun isLocked() = !pinValidated
+
     private fun validate(): Boolean {
-        return Encryption(pinString()).validate(getRegisteredPin())
+        pinValidated = Encryption(pinString()).validate(getRegisteredPin())
+        return pinValidated
     }
 
     private fun getRegisteredPin(): String {
         return context.getSharedPreferences("Common", Context.MODE_PRIVATE).getString("pin", "1234")
     }
 
-    private fun pinString(): String {
-        return ""+pin[0]+pin[1]+pin[2]+pin[3]
-    }
+    private fun pinString() = ""+pin[0]+pin[1]+pin[2]+pin[3]
 
     private fun pinExists(): Boolean {
         return context.getSharedPreferences("Common", Context.MODE_PRIVATE).getString("pin", "") != ""
