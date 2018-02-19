@@ -18,7 +18,6 @@ import kotlinx.android.synthetic.main.fragment_adding_title.view.*
  */
 class AddingTitleFragment : Fragment() {
 
-    var editMode : Boolean = false
     var editingTitle : Title? = null
     var titleCreatedCallBack: TitleCreationListener? = null
     var rootView: View? = null
@@ -36,7 +35,7 @@ class AddingTitleFragment : Fragment() {
             if (editingTitleId != -1) {
                 editingTitle = Title.get(context, editingTitleId)
                 rootView!!.name_text.setText(editingTitle!!.title)
-                rootView!!.is_protected.isPressed = editingTitle!!.isProtected
+                rootView!!.is_protected.isChecked = editingTitle!!.isProtected
             }
         }
 
@@ -47,9 +46,9 @@ class AddingTitleFragment : Fragment() {
 
     private fun saveTitle(){
         if (!rootView!!.name_text.text.isEmpty()){
-
-            if (editMode && editingTitle != null) {
+            if (editingTitle != null) {
                 editingTitle?.title = rootView!!.name_text.text.toString()
+
                 editingTitle?.isProtected = rootView!!.is_protected.isChecked
                 if (!editingTitle?.commit(context)!!){
                     Snackbar.make(rootView!!, "Failed", Snackbar.LENGTH_LONG).show()
@@ -57,14 +56,14 @@ class AddingTitleFragment : Fragment() {
                     Snackbar.make(rootView!!, "Successfully updated.", Snackbar.LENGTH_LONG).show()
                     // TODO success
                 }
-            }
+            } else {
+                val title = Title.create(context, rootView!!.name_text.text.toString(), rootView!!.is_protected.isChecked)
+                val status = if (title != null) "Title Added" else "Failed"
+                Snackbar.make(rootView!!, status, Snackbar.LENGTH_LONG).show()
 
-            val title = Title.create(context, rootView!!.name_text.text.toString(), rootView!!.is_protected.isChecked)
-            val status = if (title != null) "Title Added" else "Failed"
-            Snackbar.make(rootView!! , status, Snackbar.LENGTH_LONG).show()
-
-            if (title != null && titleCreatedCallBack != null) {
-                titleCreatedCallBack?.onTitleCreated(title)
+                if (title != null && titleCreatedCallBack != null) {
+                    titleCreatedCallBack?.onTitleCreated(title)
+                }
             }
         }
         else {

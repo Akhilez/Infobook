@@ -2,6 +2,7 @@ package `in`.akhilkanna.myinfo
 
 import `in`.akhilkanna.myinfo.dataStructures.Title
 import `in`.akhilkanna.myinfo.fragments.ItemsFragment
+import `in`.akhilkanna.myinfo.fragments.adding.PinFragment
 import `in`.akhilkanna.myinfo.security.Pin
 import android.content.ComponentCallbacks2
 import android.content.Context
@@ -19,22 +20,19 @@ import kotlinx.android.synthetic.main.fragment_items.view.*
 import kotlinx.android.synthetic.main.layout_title.view.*
 
 
+class MainActivity : AppCompatActivity(), PinFragment.PinListener {
 
-
-class MainActivity : AppCompatActivity() {
-
-    private val pin = Pin(this@MainActivity)
+    //private val pin = Pin(this@MainActivity)
     private var titleClicked: Title? = null
     private var unlockAll = true
     private val unlockedTitles = HashSet<Title>()
+    private var pinFragment: PinFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         setUpSlidingLayers()
-
-        setUpPinButtons()
 
         unlockAll = getUnlockMode()
 
@@ -49,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         super.onTrimMemory(level)
         if (level == ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN) {
             // Get called every-time when application went to background.
-            pin.lock()
+            pinFragment?.lock()
         }
     }
 
@@ -138,11 +136,7 @@ class MainActivity : AppCompatActivity() {
             override fun onOpen() {}
             override fun onOpened() {}
             override fun onClosed() {
-                pin.destroy()
-                highlightDot(false)
-                highlightDot(false)
-                highlightDot(false)
-                highlightDot(false)
+                pinFragment?.destroy()
             }
 
             override fun onShowPreview() {}
@@ -151,77 +145,26 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun setUpPinButtons() {
+    override fun pinSuccess() {
+        if (!unlockAll) unlockedTitles.add(titleClicked!!)
 
-        val pins = arrayOf(pin0, pin1, pin2, pin3, pin4, pin5, pin6, pin7, pin8, pin9)
+        buildItemsLayer(titleClicked!!)
+        lock_icon.visibility = View.VISIBLE
 
-        for ((index, pinView) in pins.withIndex()) {
-
-            pinView.setOnClickListener {
-                highlightDot(true)
-
-                if (pin.enter(index) && titleClicked != null) {
-                    if (!unlockAll) unlockedTitles.add(titleClicked!!)
-
-                    buildItemsLayer(titleClicked!!)
-                    lock_icon.visibility = View.VISIBLE
-
-                    login_sliding_layer.closeLayer(true)
-                    items_sliding_layer.openLayer(true)
-
-                } else if (pin.numEntered() == 4) {
-                    login_sliding_layer.closeLayer(true)
-                }
-            }
-        }
-        pinBack.setOnClickListener {
-            pin.back()
-            highlightDot(false)
-        }
+        login_sliding_layer.closeLayer(true)
+        items_sliding_layer.openLayer(true)
     }
 
-    private fun highlightDot(highlight: Boolean) {
-        val highlightColor = R.drawable.ic_lens_black_24dp
-        val dimColor = R.drawable.ic_panorama_fish_eye_black_24dp
-        if (dot4.tag == "1") {
-            if (!highlight) {
-                dot4.tag = "0"
-                dot4.setImageResource(dimColor)
-            }
-        } else if (dot3.tag == "1") {
-            if (highlight) {
-                dot4.tag = "1"
-                dot4.setImageResource(highlightColor)
-            } else {
-                dot3.tag = "0"
-                dot3.setImageResource(dimColor)
-            }
-        } else if (dot2.tag == "1") {
-            if (highlight) {
-                dot3.tag = "1"
-                dot3.setImageResource(highlightColor)
-            } else {
-                dot2.tag = "0"
-                dot2.setImageResource(dimColor)
-            }
-        } else if (dot1.tag == "1") {
-            if (highlight) {
-                dot2.tag = "1"
-                dot2.setImageResource(highlightColor)
-            } else {
-                dot1.tag = "0"
-                dot1.setImageResource(dimColor)
-            }
-        } else if (highlight) {
-            dot1.tag = "1"
-            dot1.setImageResource(highlightColor)
-        }
+    override fun pinFailed() {
+        login_sliding_layer.closeLayer(true)
     }
+
+
 
     private fun openItemsLayer(title: Title) {
         titleClicked = title
         if (title.isProtected)
-            if ((unlockAll && pin.isLocked()) || (!unlockAll && !unlockedTitles.contains(title)))
+            if ((unlockAll && pinFragment != null && pinFragment!!.isLocked()) || (!unlockAll && !unlockedTitles.contains(title)))
                 return login_sliding_layer.openLayer(true)
         buildItemsLayer(title)
         items_sliding_layer.openLayer(true)
@@ -233,7 +176,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun lockAll(view: View) {
-        pin.lock()
+        pinFragment?.lock()
         lock_icon.visibility = View.GONE
         if (!unlockAll) unlockedTitles.clear()
     }
