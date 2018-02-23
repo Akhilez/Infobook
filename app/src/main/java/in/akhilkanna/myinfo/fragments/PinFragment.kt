@@ -1,4 +1,4 @@
-package `in`.akhilkanna.myinfo.fragments.adding
+package `in`.akhilkanna.myinfo.fragments
 
 import `in`.akhilkanna.myinfo.R
 import `in`.akhilkanna.myinfo.security.Pin
@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_pin.*
+import kotlinx.android.synthetic.main.fragment_pin.view.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -31,7 +32,7 @@ class PinFragment : Fragment() {
     private var listener: PinListener? = null
 
     private var rootView: View? = null
-    private val pin = Pin(context)
+    private var pin: Pin? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +47,8 @@ class PinFragment : Fragment() {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_pin, container, false)
 
+        pin = Pin(context)
+
         setUpPinButtons()
 
         return rootView
@@ -53,22 +56,24 @@ class PinFragment : Fragment() {
 
     private fun setUpPinButtons() {
 
-        val pins = arrayOf(pin0, pin1, pin2, pin3, pin4, pin5, pin6, pin7, pin8, pin9)
+        val pins = arrayOf(rootView?.pin0, rootView?.pin1, rootView?.pin2, rootView?.pin3, rootView?.pin4, rootView?.pin5, rootView?.pin6, rootView?.pin7, rootView?.pin8, rootView?.pin9)
 
         for ((index, pinView) in pins.withIndex()) {
 
-            pinView.setOnClickListener {
+            pinView?.setOnClickListener {
                 highlightDot(true)
 
-                if (pin.enter(index)) {
+                if (pin!!.enter(index)) {
                     listener?.pinSuccess()
-                } else if (pin.numEntered() == 4) {
+                    destroy()
+                } else if (pin!!.numEntered() == 4) {
                     listener?.pinFailed()
+                    destroy()
                 }
             }
         }
-        pinBack.setOnClickListener {
-            pin.back()
+        rootView?.pinBack?.setOnClickListener {
+            pin!!.back()
             highlightDot(false)
         }
     }
@@ -111,20 +116,22 @@ class PinFragment : Fragment() {
         }
     }
 
-    fun lock () {
-        pin.lock()
+    fun lock() {
+        pin?.lock()
     }
 
-    fun destroy(){
-        pin.destroy()
-        highlightDot(false)
-        highlightDot(false)
-        highlightDot(false)
-        highlightDot(false)
+    fun destroy() {
+        pin?.let {
+            it.destroy()
+            highlightDot(false)
+            highlightDot(false)
+            highlightDot(false)
+            highlightDot(false)
+        }
     }
 
     fun isLocked(): Boolean {
-        return pin.isLocked()
+        return if (pin != null) pin!!.isLocked() else false
     }
 
     override fun onAttach(context: Context) {
@@ -155,6 +162,7 @@ class PinFragment : Fragment() {
     interface PinListener {
         // TODO: Update argument type and name
         fun pinSuccess()
+
         fun pinFailed()
     }
 

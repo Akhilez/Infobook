@@ -65,6 +65,16 @@
         android:layout_marginTop="29dp"
         android:text="Hidden" />
 
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/hide_switch"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        android:layout_marginTop="50dp"
+        android:id="@+id/delete_item"
+        android:text="Delete"/>
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/save_item_fab"

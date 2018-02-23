@@ -12,13 +12,12 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_adding_title.view.*
 
 
-
 /**
  * A placeholder fragment containing a simple view.
  */
 class AddingTitleFragment : Fragment() {
 
-    var editingTitle : Title? = null
+    var editingTitle: Title? = null
     var titleCreatedCallBack: TitleCreationListener? = null
     var rootView: View? = null
 
@@ -36,38 +35,55 @@ class AddingTitleFragment : Fragment() {
                 editingTitle = Title.get(context, editingTitleId)
                 rootView!!.name_text.setText(editingTitle!!.title)
                 rootView!!.is_protected.isChecked = editingTitle!!.isProtected
+                rootView?.delete_title?.visibility = View.VISIBLE
             }
         }
 
-        rootView?.save_title_fab?.setOnClickListener{ saveTitle() }
+        rootView?.save_title_fab?.setOnClickListener { saveTitle() }
+
+        rootView?.delete_title?.setOnClickListener {
+            editingTitle?.let {
+                if (it.delete(context)) {
+                    // TODO successfully deleted Title
+                } else {
+                    Snackbar.make(rootView!!, "Failed", Snackbar.LENGTH_SHORT)
+                }
+            }
+        }
 
         return rootView
     }
 
-    private fun saveTitle(){
-        if (!rootView!!.name_text.text.isEmpty()){
+    private fun saveTitle() {
+        if (!rootView!!.name_text.text.isEmpty()) {
             if (editingTitle != null) {
-                editingTitle?.title = rootView!!.name_text.text.toString()
-
-                editingTitle?.isProtected = rootView!!.is_protected.isChecked
-                if (!editingTitle?.commit(context)!!){
-                    Snackbar.make(rootView!!, "Failed", Snackbar.LENGTH_LONG).show()
-                } else {
-                    Snackbar.make(rootView!!, "Successfully updated.", Snackbar.LENGTH_LONG).show()
-                    // TODO success
-                }
+                commitTitle(editingTitle!!)
             } else {
-                val title = Title.create(context, rootView!!.name_text.text.toString(), rootView!!.is_protected.isChecked)
-                val status = if (title != null) "Title Added" else "Failed"
-                Snackbar.make(rootView!!, status, Snackbar.LENGTH_LONG).show()
-
-                if (title != null && titleCreatedCallBack != null) {
-                    titleCreatedCallBack?.onTitleCreated(title)
-                }
+                createTitle()
             }
+        } else {
+            Snackbar.make(rootView!!, "Please Enter the title.", Snackbar.LENGTH_LONG).show()
         }
-        else {
-            Snackbar.make(rootView!! , "Please Enter the title.", Snackbar.LENGTH_LONG).show()
+    }
+
+    private fun commitTitle(title: Title) {
+        title.title = rootView!!.name_text.text.toString()
+        title.isProtected = rootView!!.is_protected.isChecked
+        if (!title.commit(context)) {
+            Snackbar.make(rootView!!, "Failed", Snackbar.LENGTH_LONG).show()
+        } else {
+            Snackbar.make(rootView!!, "Successfully updated.", Snackbar.LENGTH_LONG).show()
+            // TODO success
+        }
+    }
+
+    private fun createTitle() {
+        val title = Title.create(context, rootView!!.name_text.text.toString(), rootView!!.is_protected.isChecked)
+        val status = if (title != null) "Title Added" else "Failed"
+        Snackbar.make(rootView!!, status, Snackbar.LENGTH_LONG).show()
+
+        if (title != null && titleCreatedCallBack != null) {
+            titleCreatedCallBack?.onTitleCreated(title)
         }
     }
 

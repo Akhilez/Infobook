@@ -1,9 +1,11 @@
 package `in`.akhilkanna.myinfo.fragments
 
+import `in`.akhilkanna.myinfo.AddingActivity
 import `in`.akhilkanna.myinfo.R
 import `in`.akhilkanna.myinfo.dataStructures.Item
 import `in`.akhilkanna.myinfo.dataStructures.Title
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -18,6 +20,7 @@ import kotlinx.android.synthetic.main.layout_item.view.*
 class ItemsFragment : Fragment(){
     var title: Title? = null
     var rootView: View? = null
+    var itemClicked: Item? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         rootView = inflater.inflate(R.layout.fragment_items, container, false)
@@ -30,7 +33,8 @@ class ItemsFragment : Fragment(){
         titleHeading.text = title_.title
 
         val items = Item.getItems(context, title_)
-        items_list.adapter = ItemsAdapter(items, context)
+        val adapter = ItemsAdapter(items, context)
+        items_list.adapter = adapter
 
         items_list.onItemClickListener = AdapterView.OnItemClickListener{ adapterView: AdapterView<*>, view: View, position: Int, id: Long ->
             Snackbar.make(view, items[position].key, Snackbar.LENGTH_LONG).show()
@@ -42,6 +46,10 @@ class ItemsFragment : Fragment(){
             override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
                 return when (item?.itemId) {
                     R.id.menu_title_edit -> {
+                        for (itemItr in adapter.selectedItems) {
+                            startEditActivity(itemItr)
+                            break
+                        }
                         mode?.finish()
                         true
                     }
@@ -56,10 +64,14 @@ class ItemsFragment : Fragment(){
             }
 
             override fun onItemCheckedStateChanged(mode: ActionMode?, position: Int, id: Long, checked: Boolean) {
-
+                val numSelected = items_list.checkedItemCount
+                mode?.menu?.findItem(R.id.menu_title_edit)?.isVisible = numSelected <= 1
+                mode?.title = numSelected.toString() + " Selected"
+                adapter.toggleSelection(position)
             }
 
             override fun onCreateActionMode(p0: ActionMode?, p1: Menu?): Boolean {
+                // TODO Hide the appbar of items layer
                 p0?.menuInflater?.inflate(R.menu.context_menu_title, p1)
                 return true
             }
@@ -69,14 +81,24 @@ class ItemsFragment : Fragment(){
             }
 
             override fun onDestroyActionMode(p0: ActionMode?) {
-
+                // TODO make appbar visible
+                adapter.clearSelection()
             }
 
         })
     }
 
+    private fun startEditActivity(item: Item) {
+        val intent = Intent (context, AddingActivity::class.java)
+        intent.putExtra("editingItem", item.id)
+        intent.putExtra("title", item.title.id)
+        startActivity(intent)
+    }
 
-    class ItemsAdapter(items: Array<Item>, context: Context): ArrayAdapter<Item>(context, R.layout.layout_item, items){
+
+    class ItemsAdapter(private val items: Array<Item>, context: Context): ArrayAdapter<Item>(context, R.layout.layout_item, items){
+
+        var selectedItems = HashSet<Item>()
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
             val item = getItem(position)
@@ -115,5 +137,16 @@ class ItemsFragment : Fragment(){
 
             return view
         }
+
+        fun toggleSelection(position: Int) {
+            val item = items[position]
+            if (selectedItems.contains(item))
+                selectedItems.remove(item)
+            else selectedItems.add(item)
+        }
+
+        fun clearSelection() = selectedItems.clear()
+
+
     }
 }

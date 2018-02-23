@@ -2,8 +2,7 @@ package `in`.akhilkanna.myinfo
 
 import `in`.akhilkanna.myinfo.dataStructures.Title
 import `in`.akhilkanna.myinfo.fragments.ItemsFragment
-import `in`.akhilkanna.myinfo.fragments.adding.PinFragment
-import `in`.akhilkanna.myinfo.security.Pin
+import `in`.akhilkanna.myinfo.fragments.PinFragment
 import android.content.ComponentCallbacks2
 import android.content.Context
 import android.content.Intent
@@ -24,15 +23,16 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
 
     //private val pin = Pin(this@MainActivity)
     private var titleClicked: Title? = null
-    private var unlockAll = true
+    private var unlockAll = false
     private val unlockedTitles = HashSet<Title>()
     private var pinFragment: PinFragment? = null
+    private var pinReasonCode = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        setUpSlidingLayers()
+        setUpLayout()
 
         unlockAll = getUnlockMode()
 
@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
 
     private fun getUnlockMode(): Boolean {
         // TODO get this value from settings sharedPref
-        return true
+        return false
     }
 
     override fun onTrimMemory(level: Int) {
@@ -59,13 +59,16 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
         }
     }
 
-    private fun setUpSlidingLayers() {
+    private fun setUpLayout() {
+
+        pinFragment = pin_fragment_main as PinFragment
+
         val titles = Title.getAll(this)
 
         val adapter = TitlesAdapter(titles, this)
         titles_list.adapter = adapter
 
-        titles_list.onItemClickListener = AdapterView.OnItemClickListener { adapterView: AdapterView<*>, view: View, position: Int, id: Long ->
+        titles_list.onItemClickListener = AdapterView.OnItemClickListener { _: AdapterView<*>, _: View, position: Int, _: Long ->
             val title = titles[position]
             openItemsLayer(title)
         }
@@ -76,12 +79,16 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
             override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
                 return when (item?.itemId) {
                     R.id.menu_title_edit -> {
-                        val intent = Intent(this@MainActivity, AddingActivity::class.java)
                         for (title in adapter.selectedTitles) {
-                            intent.putExtra("editingTitle", title.id)
+                            if (title.isProtected){
+                                titleClicked = title
+                                pinReasonCode = "edit"
+                                login_sliding_layer.openLayer(true)
+                            } else {
+                                startEditActivity(title)
+                            }
                             break
                         }
-                        startActivity(intent)
                         mode?.finish()
                         true
                     }
@@ -146,26 +153,35 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
     }
 
     override fun pinSuccess() {
-        if (!unlockAll) unlockedTitles.add(titleClicked!!)
+        when (pinReasonCode){
+            "edit" -> {
+                login_sliding_layer.closeLayer(true)
+                startEditActivity(titleClicked!!)
+            }
+            "open" -> {
+                login_sliding_layer.closeLayer(true)
+                if (!unlockAll)
+                    unlockedTitles.add(titleClicked!!)
 
-        buildItemsLayer(titleClicked!!)
-        lock_icon.visibility = View.VISIBLE
+                buildItemsLayer(titleClicked!!)
+                lock_icon.visibility = View.VISIBLE
 
-        login_sliding_layer.closeLayer(true)
-        items_sliding_layer.openLayer(true)
+                items_sliding_layer.openLayer(true)
+            }
+        }
     }
 
     override fun pinFailed() {
         login_sliding_layer.closeLayer(true)
     }
 
-
-
     private fun openItemsLayer(title: Title) {
         titleClicked = title
         if (title.isProtected)
-            if ((unlockAll && pinFragment != null && pinFragment!!.isLocked()) || (!unlockAll && !unlockedTitles.contains(title)))
+            if ((unlockAll && pinFragment!!.isLocked()) || (!unlockAll && !unlockedTitles.contains(title))){
+                pinReasonCode = "open"
                 return login_sliding_layer.openLayer(true)
+            }
         buildItemsLayer(title)
         items_sliding_layer.openLayer(true)
     }
@@ -173,6 +189,12 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
     private fun buildItemsLayer(title: Title) {
         val fragment: ItemsFragment = supportFragmentManager.findFragmentById(R.id.items_fragment) as ItemsFragment
         fragment.buildItemsList(title)
+    }
+
+    private fun startEditActivity(title: Title) {
+        val intent = Intent(this@MainActivity, AddingActivity::class.java)
+        intent.putExtra("editingTitle", title.id)
+        startActivity(intent)
     }
 
     fun lockAll(view: View) {
@@ -228,9 +250,7 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
             else selectedTitles.add(title)
         }
 
-        fun clearSelection(){
-            selectedTitles.clear()
-        }
+        fun clearSelection() = selectedTitles.clear()
 
     }
 

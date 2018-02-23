@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/adding_title_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/adding_title_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:showIn="@layout/activity_adding"
-    tools:context="in.akhilkanna.myinfo.fragments.adding.AddingTitleFragment">
+    tools:context="in.akhilkanna.myinfo.fragments.adding.AddingTitleFragment"
+    tools:showIn="@layout/activity_adding">
 
 
     <EditText
@@ -17,10 +17,10 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="92dp"
         android:ems="10"
-        android:maxLines="1"
-        android:minWidth="250dp"
         android:hint="ex: SBI Bank, Aadhar Card"
         android:inputType="text"
+        android:maxLines="1"
+        android:minWidth="250dp"
         tools:layout_editor_absoluteX="85dp"
         tools:layout_editor_absoluteY="88dp" />
 
@@ -42,6 +42,16 @@
         android:layout_marginTop="67dp"
         android:text="protected" />
 
+
+    <Button
+        android:id="@+id/delete_title"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/is_protected"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:text="Delete"
+        android:visibility="gone" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/save_title_fab"

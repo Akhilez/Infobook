@@ -3,22 +3,29 @@ package `in`.akhilkanna.myinfo.dataStructures
 import `in`.akhilkanna.myinfo.db.SqliteHelper
 import android.content.Context
 
-class Item (val id: Int, val title: Title, var key: String, var value: String, var hidden: Boolean) {
+class Item(val id: Int, val title: Title, var key: String, var value: String, var hidden: Boolean) {
 
-    fun commit(context: Context) : Boolean {
-        // TODO write this
-        return false
+    fun commit(context: Context): Boolean {
+        return SqliteHelper(context).updateRow(
+                TABLE_NAME,
+                hashMapOf(TITLE_ID to title.toString(), DESC to "\"" + key + "\"", VALUE to "\"" + value + "\"", HIDDEN to (if (hidden) 1 else 0).toString()),
+                ID, id.toString()
+        )
+    }
+
+    fun delete(context: Context): Boolean {
+        return SqliteHelper(context).deleteRow(TABLE_NAME, ID, id.toString())
     }
 
     companion object {
-        val TABLE_NAME = "item"
-        val ID = "id"
-        val TITLE_ID = "title_id"
-        val DESC = "desc"
-        val VALUE = "value"
-        val HIDDEN = "hidden"
+        const val TABLE_NAME = "item"
+        const val ID = "id"
+        const val TITLE_ID = "title_id"
+        const val DESC = "desc"
+        const val VALUE = "value"
+        const val HIDDEN = "hidden"
 
-        fun getItems(context: Context, title: Title): Array<Item>{
+        fun getItems(context: Context, title: Title): Array<Item> {
             val helper = SqliteHelper(context)
             val queryResult = helper.retrieveFields(TABLE_NAME, "where $TITLE_ID = ${title.id}", ID, DESC, VALUE, HIDDEN)
             return Array(queryResult.size, { i ->
@@ -27,7 +34,7 @@ class Item (val id: Int, val title: Title, var key: String, var value: String, v
             })
         }
 
-        fun get (context: Context, itemId: Int) : Item? {
+        fun get(context: Context, itemId: Int): Item? {
             val helper = SqliteHelper(context)
             val queryResult = helper.retrieveFields(TABLE_NAME, "where $ID = $itemId", ID, TITLE_ID, DESC, VALUE, HIDDEN)
             if (queryResult.isNotEmpty()) {

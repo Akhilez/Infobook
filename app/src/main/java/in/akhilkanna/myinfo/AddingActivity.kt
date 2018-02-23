@@ -3,7 +3,9 @@ package `in`.akhilkanna.myinfo
 import `in`.akhilkanna.myinfo.dataStructures.Title
 import `in`.akhilkanna.myinfo.fragments.adding.AddingItemFragment
 import `in`.akhilkanna.myinfo.fragments.adding.AddingTitleFragment
+import `in`.akhilkanna.myinfo.fragments.PinFragment
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
@@ -13,6 +15,7 @@ class AddingActivity : AppCompatActivity(), AddingTitleFragment.TitleCreationLis
 
     private var isTitleFragment = true
     private var fragmentTransaction: FragmentTransaction? = null
+    private var fragment: Fragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +26,6 @@ class AddingActivity : AppCompatActivity(), AddingTitleFragment.TitleCreationLis
         fragmentTransaction = supportFragmentManager.beginTransaction()
 
         isTitleFragment = titleId == -1
-        val fragment: Fragment?
 
         if (isTitleFragment){
             fragment = AddingTitleFragment()
@@ -31,7 +33,7 @@ class AddingActivity : AppCompatActivity(), AddingTitleFragment.TitleCreationLis
             if (editingTitle != -1) {
                 val bundle = Bundle()
                 bundle.putInt("editingTitle", editingTitle)
-                fragment.setArguments(bundle)
+                fragment?.arguments = bundle
             }
         } else {
             fragment = AddingItemFragment()
@@ -40,7 +42,7 @@ class AddingActivity : AppCompatActivity(), AddingTitleFragment.TitleCreationLis
             if (editingItem != -1)
                 bundle.putInt("editingItem", editingItem)
             bundle.putInt("titleId", titleId)
-            fragment.arguments = bundle
+            fragment?.arguments = bundle
 
         }
         fragmentTransaction?.add(R.id.fragmentContainer, fragment)
@@ -58,4 +60,5 @@ class AddingActivity : AppCompatActivity(), AddingTitleFragment.TitleCreationLis
         fragmentTransaction?.replace(R.id.fragmentContainer, fragment)
         fragmentTransaction?.commit()
     }
+
 }

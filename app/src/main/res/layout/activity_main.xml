@@ -81,7 +81,7 @@
             <fragment
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:name="in.akhilkanna.myinfo.fragments.adding.PinFragment"
+                android:name="in.akhilkanna.myinfo.fragments.PinFragment"
                 android:id="@+id/pin_fragment_main"
                 />
 

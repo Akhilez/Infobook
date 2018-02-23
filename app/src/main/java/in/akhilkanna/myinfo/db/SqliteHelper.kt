@@ -15,7 +15,7 @@ class SqliteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
         private val DATABASE_VERSION = 1
         private val DATABASE_NAME = "info.db"
 
-        class Media{
+        class Media {
             companion object {
                 val TABLE_NAME = "media"
                 val ITEM_ID = "item_id"
@@ -27,8 +27,9 @@ class SqliteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL("create table ${Title.TABLE_NAME} (${Title.ID} integer primary key autoincrement, ${Title.TITLE} varchar unique, ${Title.PROTECTED} int default 0)")
-        db.execSQL("create table ${Item.TABLE_NAME} ( ${Item.ID} integer primary key autoincrement, ${Item.TITLE_ID} int references ${Title.TABLE_NAME}(${Title.ID}), ${Item.DESC} varchar, ${Item.VALUE} varchar, ${Item.HIDDEN} int default 0, unique (${Item.TITLE_ID}, ${Item.DESC}) on conflict replace)")
+        db.execSQL("create table ${Item.TABLE_NAME} ( ${Item.ID} integer primary key autoincrement, ${Item.TITLE_ID} int references ${Title.TABLE_NAME}(${Title.ID}) on delete cascade, ${Item.DESC} varchar, ${Item.VALUE} varchar, ${Item.HIDDEN} int default 0, unique (${Item.TITLE_ID}, ${Item.DESC}) on conflict replace)")
     }
+
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         db.execSQL("drop table if exists ${Title.TABLE_NAME}")
         db.execSQL("drop table if exists ${Item.TABLE_NAME}")
@@ -39,7 +40,7 @@ class SqliteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
     // ----- MY METHODS ----------
 
 
-    fun retrieveFields (tableName: String, clause: String?, vararg fields: String): ArrayList<HashMap<String, Any?>> {
+    fun retrieveFields(tableName: String, clause: String?, vararg fields: String): ArrayList<HashMap<String, Any?>> {
         val resultTable = ArrayList<HashMap<String, Any?>>()
         val db = readableDatabase
         val query = "select " + fields.joinToString() + " from " + tableName + " " + (clause ?: "")
@@ -66,10 +67,20 @@ class SqliteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
         return resultTable
     }
 
-    fun insertRow (tableName: String, fieldValuePairs: HashMap<String, String>): Boolean {
+    fun insertRow(tableName: String, fieldValuePairs: HashMap<String, String>) =
+            executeQuery("insert into $tableName (${fieldValuePairs.keys.joinToString()}) values (${fieldValuePairs.values.joinToString()})")
+
+    fun deleteRow (tableName: String, pk: String, value: String) = executeQuery("delete from $tableName where $pk = $value")
+
+
+    fun updateRow(tableName: String, fieldValues: HashMap<String, String>, clauseField: String, clauseValue: String) =
+            executeQuery("update $tableName set ${getDelimitedPairs(fieldValues, " = ", " and ")} where $clauseField = $clauseValue")
+
+
+    private fun executeQuery(query: String): Boolean{
         val db = writableDatabase
         return try {
-            db.execSQL("insert into $tableName (${fieldValuePairs.keys.joinToString()}) values (${fieldValuePairs.values.joinToString()})")
+            db.execSQL(query)
             true
         } catch (e: SQLException) {
             false
@@ -78,7 +89,16 @@ class SqliteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
         }
     }
 
-    //fun updateRow (tableName: String, )
-    // TODO update title set title = "ABC", protected = 1 where id = 2;
+    private fun getDelimitedPairs(keyValues: HashMap<String, String>, delimiter1: String, delimiter2: String): String {
+        val builder = StringBuilder()
+        var numElements = keyValues.size
+        for (key in keyValues.keys) {
+            builder.append(key + delimiter1 + keyValues[key])
+            numElements--
+            if(numElements != 0) builder.append(delimiter2)
+        }
+        return builder.toString()
+    }
+
 
 }
