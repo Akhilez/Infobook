@@ -32,9 +32,9 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        setUpLayout()
-
         unlockAll = getUnlockMode()
+
+        setUpLayout()
 
     }
 
@@ -74,13 +74,13 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
         }
 
         titles_list.choiceMode = ListView.CHOICE_MODE_MULTIPLE_MODAL
-        titles_list.setMultiChoiceModeListener(object: AbsListView.MultiChoiceModeListener {
+        titles_list.setMultiChoiceModeListener(object : AbsListView.MultiChoiceModeListener {
 
             override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
                 return when (item?.itemId) {
                     R.id.menu_title_edit -> {
                         for (title in adapter.selectedTitles) {
-                            if (title.isProtected){
+                            if (title.isProtected) {
                                 titleClicked = title
                                 pinReasonCode = "edit"
                                 login_sliding_layer.openLayer(true)
@@ -153,7 +153,7 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
     }
 
     override fun pinSuccess() {
-        when (pinReasonCode){
+        when (pinReasonCode) {
             "edit" -> {
                 login_sliding_layer.closeLayer(true)
                 startEditActivity(titleClicked!!)
@@ -178,7 +178,7 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
     private fun openItemsLayer(title: Title) {
         titleClicked = title
         if (title.isProtected)
-            if ((unlockAll && pinFragment!!.isLocked()) || (!unlockAll && !unlockedTitles.contains(title))){
+            if ((unlockAll && pinFragment!!.isLocked()) || (!unlockAll && !unlockedTitles.contains(title))) {
                 pinReasonCode = "open"
                 return login_sliding_layer.openLayer(true)
             }
@@ -203,7 +203,7 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
         if (!unlockAll) unlockedTitles.clear()
     }
 
-    fun fabClicked(view: View){
+    fun fabClicked(view: View) {
         val adderIntent = Intent(MainActivity@ this, AddingActivity::class.java)
         if (items_sliding_layer.isOpened && titleClicked != null) {
             adderIntent.putExtra("title", titleClicked?.id)

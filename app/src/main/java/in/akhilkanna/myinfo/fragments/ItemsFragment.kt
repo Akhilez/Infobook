@@ -17,7 +17,7 @@ import android.widget.ListView
 import kotlinx.android.synthetic.main.fragment_items.*
 import kotlinx.android.synthetic.main.layout_item.view.*
 
-class ItemsFragment : Fragment(){
+class ItemsFragment : Fragment() {
     var title: Title? = null
     var rootView: View? = null
     var itemClicked: Item? = null
@@ -36,12 +36,12 @@ class ItemsFragment : Fragment(){
         val adapter = ItemsAdapter(items, context)
         items_list.adapter = adapter
 
-        items_list.onItemClickListener = AdapterView.OnItemClickListener{ adapterView: AdapterView<*>, view: View, position: Int, id: Long ->
+        items_list.onItemClickListener = AdapterView.OnItemClickListener { adapterView: AdapterView<*>, view: View, position: Int, id: Long ->
             Snackbar.make(view, items[position].key, Snackbar.LENGTH_LONG).show()
         }
 
         items_list.choiceMode = ListView.CHOICE_MODE_MULTIPLE_MODAL
-        items_list.setMultiChoiceModeListener(object: AbsListView.MultiChoiceModeListener {
+        items_list.setMultiChoiceModeListener(object : AbsListView.MultiChoiceModeListener {
 
             override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
                 return when (item?.itemId) {
@@ -89,14 +89,14 @@ class ItemsFragment : Fragment(){
     }
 
     private fun startEditActivity(item: Item) {
-        val intent = Intent (context, AddingActivity::class.java)
+        val intent = Intent(context, AddingActivity::class.java)
         intent.putExtra("editingItem", item.id)
         intent.putExtra("title", item.title.id)
         startActivity(intent)
     }
 
 
-    class ItemsAdapter(private val items: Array<Item>, context: Context): ArrayAdapter<Item>(context, R.layout.layout_item, items){
+    class ItemsAdapter(private val items: Array<Item>, context: Context) : ArrayAdapter<Item>(context, R.layout.layout_item, items) {
 
         var selectedItems = HashSet<Item>()
 
@@ -105,7 +105,7 @@ class ItemsFragment : Fragment(){
 
             var view = convertView
 
-            if (convertView == null){
+            if (convertView == null) {
                 val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 view = inflater.inflate(R.layout.layout_item, parent, false)
             }
@@ -121,7 +121,7 @@ class ItemsFragment : Fragment(){
                 hideButton?.setOnTouchListener { myView, event ->
                     if (event?.action == MotionEvent.ACTION_DOWN) {
                         view?.valueText?.visibility = View.VISIBLE
-                    }else if (event?.action == MotionEvent.ACTION_UP){
+                    } else if (event?.action == MotionEvent.ACTION_UP) {
                         view?.valueText?.visibility = View.INVISIBLE
                     }
                     true

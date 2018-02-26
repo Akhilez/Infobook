@@ -5,17 +5,13 @@ import android.content.Context
 
 class Item(val id: Int, val title: Title, var key: String, var value: String, var hidden: Boolean) {
 
-    fun commit(context: Context): Boolean {
-        return SqliteHelper(context).updateRow(
-                TABLE_NAME,
-                hashMapOf(TITLE_ID to title.toString(), DESC to "\"" + key + "\"", VALUE to "\"" + value + "\"", HIDDEN to (if (hidden) 1 else 0).toString()),
-                ID, id.toString()
-        )
-    }
+    fun commit(context: Context) = SqliteHelper(context).updateRow(
+            TABLE_NAME,
+            hashMapOf(DESC to "\"" + key + "\"", VALUE to "\"" + value + "\"", HIDDEN to (if (hidden) 1 else 0).toString()),
+            ID, id.toString()
+    )
 
-    fun delete(context: Context): Boolean {
-        return SqliteHelper(context).deleteRow(TABLE_NAME, ID, id.toString())
-    }
+    fun delete(context: Context) = SqliteHelper(context).deleteRow(TABLE_NAME, ID, id.toString())
 
     companion object {
         const val TABLE_NAME = "item"

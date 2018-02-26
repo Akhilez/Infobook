@@ -74,7 +74,7 @@ class SqliteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
 
 
     fun updateRow(tableName: String, fieldValues: HashMap<String, String>, clauseField: String, clauseValue: String) =
-            executeQuery("update $tableName set ${getDelimitedPairs(fieldValues, " = ", " and ")} where $clauseField = $clauseValue")
+            executeQuery("update $tableName set ${getDelimitedPairs(fieldValues, " = ", ", ")} where $clauseField = $clauseValue")
 
 
     private fun executeQuery(query: String): Boolean{

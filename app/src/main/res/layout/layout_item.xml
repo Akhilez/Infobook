@@ -1,45 +1,44 @@
-<RelativeLayout android:layout_height="wrap_content"
-    android:minHeight="70dp"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content"
+    android:background="@drawable/list_item_bg"
+    android:minHeight="70dp">
 
     <TextView
         android:id="@+id/keyText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorPrimary"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="31dp"
         android:layout_marginTop="12dp"
         android:text="abcd"
+        android:textColor="@color/colorPrimary"
         android:textSize="14sp" />
 
     <TextView
         android:id="@+id/valueText"
         android:layout_width="wrap_content"
-        android:layout_below="@+id/keyText"
-        android:textColor="@color/colorPrimaryDark"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/keyText"
+        android:layout_below="@+id/keyText"
         android:paddingBottom="10dp"
         android:paddingEnd="80dp"
         android:text="abcd"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="18sp" />
 
 
     <ImageView
+        android:id="@+id/hideButton"
         android:layout_width="24dp"
         android:layout_height="wrap_content"
-        android:id="@+id/hideButton"
-        android:src="@drawable/ic_visibility_white_24dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="31dp"
+        android:src="@drawable/ic_visibility_white_24dp"
         android:tint="@color/colorPrimaryDark"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
 
 </RelativeLayout>
