@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
 
         val titlesList = titles_list
 
-        titlesList.setAdapter(adapter)
+        titlesList.adapter = adapter
 
         titlesList.onItemClickListener = AdapterView.OnItemClickListener { _: AdapterView<*>, _: View, position: Int, _: Long -> openItemsLayer(titles[position]) }
 
@@ -254,6 +254,8 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
         fun clearSelection() = selectedTitles.clear()
 
     }
+
+    // TODO change the listview to recyclerView and try to enable sorting.
 
 }
 
