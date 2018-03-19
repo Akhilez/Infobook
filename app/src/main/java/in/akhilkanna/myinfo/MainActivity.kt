@@ -257,7 +257,6 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
 
     // TODO change the listview to recyclerView and try to enable sorting.
 
-
 }
 
 
