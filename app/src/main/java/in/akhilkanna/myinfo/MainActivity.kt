@@ -66,15 +66,16 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
         val titles = Title.getAll(this)
 
         val adapter = TitlesAdapter(titles, this)
-        titles_list.adapter = adapter
+        //val adapter = TitlesDragAdapter(titles.toCollection(ArrayList()), R.layout.layout_title, 0, true)
 
-        titles_list.onItemClickListener = AdapterView.OnItemClickListener { _: AdapterView<*>, _: View, position: Int, _: Long ->
-            val title = titles[position]
-            openItemsLayer(title)
-        }
+        val titlesList = titles_list
 
-        titles_list.choiceMode = ListView.CHOICE_MODE_MULTIPLE_MODAL
-        titles_list.setMultiChoiceModeListener(object : AbsListView.MultiChoiceModeListener {
+        titlesList.setAdapter(adapter)
+
+        titlesList.onItemClickListener = AdapterView.OnItemClickListener { _: AdapterView<*>, _: View, position: Int, _: Long -> openItemsLayer(titles[position]) }
+
+        titlesList.choiceMode = ListView.CHOICE_MODE_MULTIPLE_MODAL
+        titlesList.setMultiChoiceModeListener(object : AbsListView.MultiChoiceModeListener {
 
             override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
                 return when (item?.itemId) {
@@ -103,7 +104,7 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
             }
 
             override fun onItemCheckedStateChanged(mode: ActionMode?, position: Int, id: Long, checked: Boolean) {
-                val numSelected = titles_list.checkedItemCount
+                val numSelected = titlesList.checkedItemCount
                 mode?.menu?.findItem(R.id.menu_title_edit)?.isVisible = numSelected <= 1
                 mode?.title = numSelected.toString() + " Selected"
                 adapter.toggleSelection(position)
