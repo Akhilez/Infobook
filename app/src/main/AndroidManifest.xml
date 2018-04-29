@@ -15,15 +15,18 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".AddingActivity"
-            android:windowSoftInputMode="stateVisible"
             android:label="@string/title_activity_adding"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateVisible" />
+        <activity
+            android:name=".ItemsActivity"
+            android:label="@string/title_activity_items"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

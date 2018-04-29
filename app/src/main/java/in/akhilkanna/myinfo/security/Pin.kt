@@ -4,7 +4,7 @@ import android.content.Context
 
 
 
-class Pin (private val context: Context) {
+class Pin (private val context: Context?) {
 
     private val pin = IntArray(4)
     private var length = 0
@@ -43,13 +43,13 @@ class Pin (private val context: Context) {
     }
 
     private fun getRegisteredPin(): String {
-        return context.getSharedPreferences("Common", Context.MODE_PRIVATE).getString("pin", "1234")
+        return context!!.getSharedPreferences("Common", Context.MODE_PRIVATE).getString("pin", "1234")
     }
 
     private fun pinString() = ""+pin[0]+pin[1]+pin[2]+pin[3]
 
     private fun pinExists(): Boolean {
-        return context.getSharedPreferences("Common", Context.MODE_PRIVATE).getString("pin", "") != ""
+        return context!!.getSharedPreferences("Common", Context.MODE_PRIVATE).getString("pin", "") != ""
 
         /*
         if (pin == null){

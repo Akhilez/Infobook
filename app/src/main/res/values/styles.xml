@@ -8,6 +8,22 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="actionModeStyle">@style/LywActionMode</item>
+
+        <!-- enable window content transitions -->
+        <item name="android:windowActivityTransitions">true</item>
+
+        <!-- specify enter and exit transitions -->
+        <item name="android:windowEnterTransition">@transition/explode</item>
+        <item name="android:windowExitTransition">@transition/explode</item>
+
+        <!-- specify shared element transitions -->
+        <item name="android:windowSharedElementEnterTransition">
+            @transition/change_bounds
+        </item>
+        <item name="android:windowSharedElementExitTransition">
+            @transition/change_bounds
+        </item>
+
     </style>
 
     <style name="AppTheme.NoActionBar">

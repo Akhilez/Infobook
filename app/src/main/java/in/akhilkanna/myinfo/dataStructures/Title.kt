@@ -5,16 +5,16 @@ import android.content.Context
 
 class Title(val id: Int, var title: String, var isProtected: Boolean) {
 
-    fun commit(context: Context): Boolean {
-        return SqliteHelper(context).updateRow(
+    fun commit(context: Context?): Boolean {
+        return SqliteHelper(context!!).updateRow(
                 TABLE_NAME,
                 hashMapOf(TITLE to "\"" + title+ "\"", PROTECTED to (if (isProtected) 1 else 0).toString()),
                 ID, id.toString()
         )
     }
 
-    fun delete(context: Context): Boolean {
-        return SqliteHelper(context).deleteRow(TABLE_NAME, ID, id.toString())
+    fun delete(context: Context?): Boolean {
+        return SqliteHelper(context!!).deleteRow(TABLE_NAME, ID, id.toString())
     }
 
     override fun toString(): String {
@@ -35,8 +35,8 @@ class Title(val id: Int, var title: String, var isProtected: Boolean) {
         const val TITLE = "title"
         const val PROTECTED = "protected"
 
-        fun get(context: Context, id: Int): Title? {
-            val helper = SqliteHelper(context)
+        fun get(context: Context?, id: Int): Title? {
+            val helper = SqliteHelper(context!!)
             val queryResult = helper.retrieveFields(TABLE_NAME, "where $ID = $id", ID, TITLE, PROTECTED)
             if (queryResult.isNotEmpty()) {
                 val row = queryResult[0]
@@ -45,8 +45,8 @@ class Title(val id: Int, var title: String, var isProtected: Boolean) {
             return null
         }
 
-        fun create(context: Context, title: String, isProtected: Boolean): Title? {
-            val helper = SqliteHelper(context)
+        fun create(context: Context?, title: String, isProtected: Boolean): Title? {
+            val helper = SqliteHelper(context!!)
             val isInserted = helper.insertRow(TABLE_NAME, hashMapOf(TITLE to "\"$title\"", PROTECTED to if (isProtected) "1" else "0"))
             if (isInserted) {
                 val retrievedTitle = helper.retrieveFields(TABLE_NAME, "where $TITLE = \"$title\"", ID, TITLE, PROTECTED)

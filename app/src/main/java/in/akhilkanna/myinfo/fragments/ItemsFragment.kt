@@ -96,7 +96,7 @@ class ItemsFragment : Fragment() {
     }
 
 
-    class ItemsAdapter(private val items: Array<Item>, context: Context) : ArrayAdapter<Item>(context, R.layout.layout_item, items) {
+    class ItemsAdapter(private val items: Array<Item>, context: Context?) : ArrayAdapter<Item>(context, R.layout.layout_item, items) {
 
         var selectedItems = HashSet<Item>()
 

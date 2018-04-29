@@ -1,8 +1,9 @@
 <RelativeLayout android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:minHeight="70dp"
     android:layout_width="match_parent"
     android:background="@drawable/list_title_bg"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <TextView
         android:id="@+id/titleText"
@@ -14,9 +15,19 @@
         android:text="Title"
         android:textColor="#fff"
         android:shadowColor="#000"
+        android:transitionName="titleName"
         android:shadowDx="0.9"
         android:shadowDy="0.9"
         android:shadowRadius="1"
         android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/handle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:visibility="invisible"
+        app:srcCompat="@android:drawable/ic_dialog_dialer" />
 
 </RelativeLayout>

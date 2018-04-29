@@ -59,12 +59,13 @@
 
             </RelativeLayout>
 
-            <ListView
+            <android.support.v7.widget.RecyclerView
                 android:id="@+id/titles_list"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/appbar"
                 android:divider="#80515151"
+                android:scrollbars="vertical"
                 android:dividerHeight="0.5dp" />
 
         </RelativeLayout>
