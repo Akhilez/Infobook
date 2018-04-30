@@ -39,6 +39,8 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setSupportActionBar(toolbar)
+        title = ""
 
         unlockAll = getUnlockMode()
 
@@ -62,7 +64,6 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
     override fun onBackPressed() {
         when {
             login_sliding_layer.isOpened -> login_sliding_layer.closeLayer(true)
-            items_sliding_layer.isOpened -> items_sliding_layer.closeLayer(true)
             else -> super.onBackPressed()
         }
     }
@@ -88,19 +89,6 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
         itemHelper = ItemTouchHelper(dragHelper)
         itemHelper.attachToRecyclerView(recyclerView)
 
-
-        items_sliding_layer.setOnInteractListener(object : SlidingLayer.OnInteractListener {
-            override fun onClose() {}
-            override fun onClosed() {
-                items_sliding_layer.items_list.adapter = null
-            }
-
-            override fun onShowPreview() {}
-            override fun onOpen() {}
-            override fun onOpened() {}
-            override fun onPreviewShowed() {}
-        })
-
         login_sliding_layer.setOnInteractListener(object : SlidingLayer.OnInteractListener {
             override fun onPreviewShowed() {}
             override fun onOpen() {}
@@ -125,7 +113,7 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
                 login_sliding_layer.closeLayer(true)
                 if (!unlockAll)
                     unlockedTitles.add(titleClicked!!)
-                lock_icon.visibility = View.VISIBLE
+                // TODO lock_icon.visibility = View.VISIBLE
 
                 titleClicked?.let { titleClickedView?.let { view -> openItemsLayer(it, view) } }
             }
@@ -160,15 +148,12 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
 
     fun lockAll(view: View) {
         pinFragment?.lock()
-        lock_icon.visibility = View.GONE
+        // TODO lock_icon.visibility = View.GONE
         if (!unlockAll) unlockedTitles.clear()
     }
 
     fun fabClicked(view: View) {
         val adderIntent = Intent(MainActivity@ this, AddingActivity::class.java)
-        if (items_sliding_layer.isOpened && titleClicked != null) {
-            adderIntent.putExtra("title", titleClicked?.id)
-        }
         startActivity(adderIntent)
     }
 

@@ -4,71 +4,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/bg_1"
     tools:context="in.akhilkanna.myinfo.MainActivity">
 
     <RelativeLayout
-        android:layout_width="match_parent"
         android:id="@+id/main_parent"
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:id="@+id/main_page"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="35dp"
-                android:id="@+id/appbar">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/app_name"
-                    android:textColor="#fff"
-                    android:textSize="24sp"
-                    android:shadowColor="#000"
-                    android:shadowDx="0.9"
-                    android:shadowDy="0.9"
-                    android:shadowRadius="1"
-                    android:fontFamily="cursive"
-                    android:layout_marginStart="30dp"
-                    android:layout_centerVertical="true" />
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:id="@+id/toolbarButtons"
-                    android:visibility="visible"
-                    android:layout_alignParentEnd="true">
-
-                    <ImageView
-                        android:layout_width="54dp"
-                        android:layout_height="match_parent"
-                        android:padding="15dp"
-                        android:id="@+id/lock_icon"
-                        android:src="@drawable/ic_lock_open_white_24dp"
-                        android:onClick="lockAll"
-                        android:visibility="gone"/>
-
-
-
-                </RelativeLayout>
-
-            </RelativeLayout>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/titles_list"
+            <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/appbar"
-                android:divider="#80515151"
-                android:scrollbars="vertical"
-                android:dividerHeight="0.5dp" />
+                android:layout_height="wrap_content"
+                android:fontFamily="cursive"
+                android:textSize="22sp"
+                android:text="@string/app_name"/>
 
-        </RelativeLayout>
+        </android.support.v7.widget.Toolbar>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/titles_list"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/toolbar"
+            android:layout_height="match_parent"
+            android:divider="#80515151"
+            android:dividerHeight="1.5dp"
+            android:scrollbars="vertical" />
 
         <com.wunderlist.slidinglayer.SlidingLayer xmlns:slidingLayer="http://schemas.android.com/apk/res-auto"
             android:id="@+id/login_sliding_layer"
@@ -80,28 +48,10 @@
             slidingLayer:stickTo="bottom">
 
             <fragment
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:name="in.akhilkanna.myinfo.fragments.PinFragment"
                 android:id="@+id/pin_fragment_main"
-                />
-
-        </com.wunderlist.slidinglayer.SlidingLayer>
-
-        <com.wunderlist.slidinglayer.SlidingLayer xmlns:slidingLayer="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/items_sliding_layer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:elevation="5dp"
-            slidingLayer:changeStateOnTap="false"
-            slidingLayer:stickTo="left">
-
-            <fragment
+                android:name="in.akhilkanna.myinfo.fragments.PinFragment"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/items_fragment"
-                android:name="in.akhilkanna.myinfo.fragments.ItemsFragment"
-                />
+                android:layout_height="match_parent" />
 
         </com.wunderlist.slidinglayer.SlidingLayer>
 
@@ -109,12 +59,12 @@
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
             android:layout_gravity="bottom|end"
-            android:onClick="fabClicked"
-            android:layout_marginBottom="26dp"
             android:layout_marginEnd="26dp"
+            android:layout_marginBottom="26dp"
+            android:onClick="fabClicked"
             android:src="@drawable/ic_add_white_24dp" />
 
     </RelativeLayout>

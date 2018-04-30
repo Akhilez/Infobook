@@ -14,8 +14,8 @@ class ItemsActivity : AppCompatActivity() {
 
 
         val extras = intent.extras
-        val titleString = extras["titleId"].toString()
-        toolbar_layout.title = titleString
+        val titleId = extras["titleId"].toString()
+        toolbar_layout.title = titleId
 
     }
 }

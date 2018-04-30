@@ -3,4 +3,5 @@
     <dimen name="pin_dot_width">24dp</dimen>
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="actionbar_size">56dp</dimen>
 </resources>
