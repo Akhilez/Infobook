@@ -24,6 +24,6 @@
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
         android:visibility="invisible"
-        app:srcCompat="@android:drawable/ic_dialog_dialer" />
+        app:srcCompat="@drawable/ic_drag_handle_white_24dp" />
 
 </RelativeLayout>

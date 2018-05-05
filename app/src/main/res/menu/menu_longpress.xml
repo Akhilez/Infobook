@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/move_menu"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_reorder_white_24dp"
+        android:title="MOVE" />
+    <item
+        android:id="@+id/edit_menu"
+        android:title="EDIT"
+        android:icon="@drawable/ic_mode_edit_white_24dp"
+        android:orderInCategory="101"
+        />
+    <item
+        android:id="@+id/copy_menu"
+        android:title="COPY"
+        android:icon="@drawable/ic_content_copy_white_24dp"
+        android:orderInCategory="102"
+        />
+</menu>

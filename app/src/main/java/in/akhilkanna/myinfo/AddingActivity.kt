@@ -3,9 +3,7 @@ package `in`.akhilkanna.myinfo
 import `in`.akhilkanna.myinfo.dataStructures.Title
 import `in`.akhilkanna.myinfo.fragments.adding.AddingItemFragment
 import `in`.akhilkanna.myinfo.fragments.adding.AddingTitleFragment
-import `in`.akhilkanna.myinfo.fragments.PinFragment
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity

@@ -1,12 +1,11 @@
 package `in`.akhilkanna.myinfo
 
 import `in`.akhilkanna.myinfo.dataStructures.Title
-import `in`.akhilkanna.myinfo.fragments.PinFragment
+import `in`.akhilkanna.myinfo.libs.LockHelper
 import `in`.akhilkanna.myinfo.libs.MyCallback
 import android.app.ActivityOptions
 import android.content.ComponentCallbacks2
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -14,27 +13,30 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.*
 import android.widget.*
-import com.wunderlist.slidinglayer.SlidingLayer
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_items.view.*
 import kotlinx.android.synthetic.main.layout_title.view.*
-import android.support.v7.view.ActionMode
+import kotlinx.android.synthetic.main.pin_sheet.*
+import android.view.MenuInflater
+import android.view.ContextMenu.ContextMenuInfo
+import android.view.ContextMenu
 
 
-class MainActivity : AppCompatActivity(), PinFragment.PinListener {
 
-    //private val pin = Pin(this@MainActivity)
+
+class MainActivity : AppCompatActivity(), LockHelper.PinListener {
+
     private var titleClicked: Title? = null
     private var titleClickedView: View? = null
     private var unlockAll = false
     private val unlockedTitles = HashSet<Title>()
-    private var pinFragment: PinFragment? = null
+    private lateinit var lockHelper: LockHelper
     private var pinReasonCode = ""
-
+    private lateinit var menu: Menu
     private lateinit var recyclerView: RecyclerView
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
+    private lateinit var viewAdapter: MyAdapter
     private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var itemHelper: ItemTouchHelper
+    private lateinit var titles: Array<Title>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,22 +59,20 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
         super.onTrimMemory(level)
         if (level == ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN) {
             // Get called every-time when application went to background.
-            pinFragment?.lock()
+            lockHelper.lock()
         }
     }
 
     override fun onBackPressed() {
         when {
-            login_sliding_layer.isOpened -> login_sliding_layer.closeLayer(true)
+            lockHelper.isExpanded() -> lockHelper.closeSheet()
             else -> super.onBackPressed()
         }
     }
 
     private fun setUpLayout() {
 
-        pinFragment = pin_fragment_main as PinFragment
-
-        val titles = Title.getAll(this)
+        titles = Title.getAll(this)
 
         viewManager = LinearLayoutManager(this)
         viewAdapter = MyAdapter(titles)
@@ -85,52 +85,42 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
             adapter = viewAdapter
         }
 
-        val dragHelper = MyCallback(viewAdapter as MyAdapter)
+        val dragHelper = MyCallback(viewAdapter)
         itemHelper = ItemTouchHelper(dragHelper)
         itemHelper.attachToRecyclerView(recyclerView)
 
-        login_sliding_layer.setOnInteractListener(object : SlidingLayer.OnInteractListener {
-            override fun onPreviewShowed() {}
-            override fun onOpen() {}
-            override fun onOpened() {}
-            override fun onClosed() {
-                pinFragment?.destroy()
-            }
-
-            override fun onShowPreview() {}
-            override fun onClose() {}
-        })
+        lockHelper = LockHelper(this@MainActivity, pin_sheet)
 
     }
 
     override fun pinSuccess() {
         when (pinReasonCode) {
             "edit" -> {
-                login_sliding_layer.closeLayer(true)
+                lockHelper.closeSheet()
                 startEditActivity(titleClicked!!)
             }
             "open" -> {
-                login_sliding_layer.closeLayer(true)
+                lockHelper.closeSheet()
                 if (!unlockAll)
                     unlockedTitles.add(titleClicked!!)
-                // TODO lock_icon.visibility = View.VISIBLE
-
+                menu.findItem(R.id.lock_all_menu).isVisible = true
                 titleClicked?.let { titleClickedView?.let { view -> openItemsLayer(it, view) } }
             }
         }
     }
 
     override fun pinFailed() {
-        login_sliding_layer.closeLayer(true)
+        lockHelper.closeSheet()
     }
 
     private fun openItemsLayer(title: Title, transitionView: View) {
         titleClicked = title
         titleClickedView = transitionView
         if (title.isProtected)
-            if ((unlockAll && pinFragment!!.isLocked()) || (!unlockAll && !unlockedTitles.contains(title))) {
+            if ((unlockAll && lockHelper.isLocked()) || (!unlockAll && !unlockedTitles.contains(title))) {
                 pinReasonCode = "open"
-                return login_sliding_layer.openLayer(true)
+                lockHelper.openSheet()
+                return
             }
         val intent = Intent(this@MainActivity, ItemsActivity::class.java).apply {
             putExtra("titleId", title.id.toString())
@@ -146,9 +136,9 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
         startActivity(intent)
     }
 
-    fun lockAll(view: View) {
-        pinFragment?.lock()
-        // TODO lock_icon.visibility = View.GONE
+    private fun lockAll() {
+        lockHelper.lock()
+        menu.findItem(R.id.lock_all_menu).isVisible = false
         if (!unlockAll) unlockedTitles.clear()
     }
 
@@ -159,36 +149,74 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
+        this@MainActivity.menu = menu
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.lock_all_menu -> {
+                lockAll()
+                true
+            }
+            R.id.search_menu -> {
+                // TODO Implement search
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    inner class MyAdapter(private val myDataset: Array<Title>) : RecyclerView.Adapter<MyAdapter.ViewHolder>(), MyCallback.ActionCompletionContract {
+    override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        titleClickedView = v
+        titleClicked = titles[v?.findViewById<TextView>(R.id.titleText)?.tag.toString().toInt()-1]
+        val inflater = menuInflater
+        inflater.inflate(R.menu.menu_longpress, menu)
+        Toast.makeText(this@MainActivity, "Created", Toast.LENGTH_SHORT).show()
+    }
 
-        private val selected = HashSet<Int>()
-        private val actionMenu = ActionMenu()
-        private var actionMode: ActionMode? = null
+    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+        // close lock pins when touched anywhere else
+        if (event?.action == MotionEvent.ACTION_DOWN)
+            if (lockHelper.isExpanded())
+                if (!lockHelper.handleOutsideTouch(event))
+                    return false
+        return super.dispatchTouchEvent(event)
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.move_menu -> {
+                titleClickedView?.handle?.visibility = View.VISIBLE
+                true
+            }
+            R.id.edit_menu -> {
+                viewAdapter.editAt(titleClickedView?.titleText?.tag.toString().toInt())
+                true
+            }
+            R.id.copy_menu -> {
+                // TODO do on copy
+                true
+            }
+            else -> super.onContextItemSelected(item)
+        }
+    }
+
+    inner class MyAdapter(private val titlesList: Array<Title>) : RecyclerView.Adapter<MyAdapter.ViewHolder>(), MyCallback.ActionCompletionContract {
 
         override fun onViewMoved(oldPosition: Int, newPosition: Int) {
-            val temp = myDataset[oldPosition]
-            myDataset[oldPosition] = myDataset[newPosition]
-            myDataset[newPosition] = temp
-            if (selected.size > 0)
-                highlightAt(recyclerView.findViewHolderForAdapterPosition(oldPosition))
+            val temp = titlesList[oldPosition]
+            titlesList[oldPosition] = titlesList[newPosition]
+            titlesList[newPosition] = temp
             notifyItemMoved(oldPosition, newPosition)
-            Toast.makeText(this@MainActivity, "Dragged from $oldPosition to $newPosition", Toast.LENGTH_SHORT).show()
         }
 
         override fun itemDropped(holder: RecyclerView.ViewHolder?) {
-            if (holder != null) {
-                highlightAt(holder)
-            }
+            if (titleClickedView == null) return
+            titleClickedView!!.handle.visibility = View.GONE
+            notifyDataSetChanged()
+            titlesList.forEach { it.commit(this@MainActivity) }
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -198,114 +226,34 @@ class MainActivity : AppCompatActivity(), PinFragment.PinListener {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = holder.itemView
-            item.titleText.text = myDataset[position].title
-            item.titleText.tag = myDataset[position].id
+            item.titleText.text = titlesList[position].title
+            item.titleText.tag = titlesList[position].id
             item.setOnClickListener {
-                if (selected.size == 0) {
-                    openItemsLayer(myDataset[position], holder.itemView.titleText)
-                } else
-                    highlightAt(holder)
+                openItemsLayer(titlesList[position], holder.itemView.titleText)
             }
-            item.setOnLongClickListener {
-                highlightAt(holder)
-                true
-            }
-            item.handle.setOnTouchListener { _, event ->
-                if (event.actionMasked == MotionEvent.ACTION_DOWN && selected.size > 0) {
+            item.handle.setOnTouchListener { _: View, event ->
+                if (event.actionMasked == MotionEvent.ACTION_DOWN) {
                     itemHelper.startDrag(holder)
                 }
                 false
             }
+            this@MainActivity.registerForContextMenu(item)
         }
 
-        override fun getItemCount() = myDataset.size
+        override fun getItemCount() = titlesList.size
 
-        fun removeSelected() {
-            val cloned = HashSet<Int>(selected)
-            for (holder in cloned) {
-                highlightAt(recyclerView.findViewHolderForAdapterPosition(holder))
-            }
-            selected.clear()
-        }
-
-        private fun highlightAt(holder: RecyclerView.ViewHolder) {
-            highlightAt(holder.adapterPosition, holder.itemView)
-            when {
-                selected.size == 0 -> {
-                    actionMode?.finish()
-                    actionMode = null
-                    holder.itemView.handle.visibility = View.INVISIBLE
-                }
-                selected.size == 1 -> {
-                    if (actionMode == null) {
-                        actionMode = startSupportActionMode(actionMenu)
-                        holder.itemView.handle.visibility = View.VISIBLE
-                    }
-                    actionMenu.hideEdit(actionMode, false)
-                }
-                selected.size > 1 -> actionMenu.hideEdit(actionMode, true)
-            }
-        }
-
-        private fun highlightAt(position: Int, layout: View) {
-            if (selected.contains(position)) {
-                layout.setBackgroundColor(Color.YELLOW)
-                selected.remove(position)
+        fun editAt(id: Int){
+            val selected = titlesList.filter { id == it.id }[0]
+            this@MainActivity.titleClicked = selected
+            if (selected.isProtected) {
+                pinReasonCode = "edit"
+                lockHelper.openSheet()
             } else {
-                layout.setBackgroundColor(Color.BLUE)
-                selected.add(position)
+                startEditActivity(selected)
             }
         }
 
         inner class ViewHolder(view: RelativeLayout) : RecyclerView.ViewHolder(view)
-
-        inner class ActionMenu : android.support.v7.view.ActionMode.Callback {
-            override fun onActionItemClicked(mode: android.support.v7.view.ActionMode?, item: MenuItem?): Boolean {
-                return when (item?.itemId) {
-                    R.id.menu_title_edit -> {
-                        for (i in selected) {
-                            if (myDataset[i].isProtected) {
-                                titleClicked = myDataset[i]
-                                pinReasonCode = "edit"
-                                login_sliding_layer.openLayer(true)
-                            } else {
-                                startEditActivity(myDataset[i])
-                            }
-                            break
-                        }
-                        mode?.finish()
-                        true
-                    }
-                    R.id.menu_title_share -> {
-                        mode?.finish()
-                        true
-                    }
-                    else -> {
-                        false
-                    }
-                }
-            }
-
-            override fun onCreateActionMode(mode: android.support.v7.view.ActionMode?, menu: Menu?): Boolean {
-                mode?.menuInflater?.inflate(R.menu.context_menu_title, menu)
-                return true
-            }
-
-            override fun onPrepareActionMode(mode: android.support.v7.view.ActionMode?, menu: Menu?): Boolean {
-                return false
-            }
-
-            override fun onDestroyActionMode(mode: android.support.v7.view.ActionMode?) {
-                removeSelected()
-                //mode?.finish()
-            }
-
-            fun hideEdit(mode: ActionMode?, hide: Boolean) {
-                val editMenu = mode?.menu?.findItem(R.id.menu_title_edit)
-                editMenu?.isVisible = !hide
-            }
-
-        }
 
     }
 

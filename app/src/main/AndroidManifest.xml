@@ -25,7 +25,7 @@
             android:windowSoftInputMode="stateVisible" />
         <activity
             android:name=".ItemsActivity"
-            android:label="@string/title_activity_items"
+            android:label="Title"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 

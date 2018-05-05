@@ -38,22 +38,15 @@
             android:dividerHeight="1.5dp"
             android:scrollbars="vertical" />
 
-        <com.wunderlist.slidinglayer.SlidingLayer xmlns:slidingLayer="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/login_sliding_layer"
+        <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:elevation="7dp"
-            slidingLayer:changeStateOnTap="true"
-            slidingLayer:shadowSize="250dp"
-            slidingLayer:stickTo="bottom">
+            android:layout_alignParentBottom="true"
+            android:layout_height="wrap_content">
 
-            <fragment
-                android:id="@+id/pin_fragment_main"
-                android:name="in.akhilkanna.myinfo.fragments.PinFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+            <include layout="@layout/pin_sheet" />
 
-        </com.wunderlist.slidinglayer.SlidingLayer>
+        </android.support.design.widget.CoordinatorLayout>
+
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
