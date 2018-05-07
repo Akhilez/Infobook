@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<transitionSet xmlns:android="http://schemas.android.com/apk/res/android">
-    <explode/>
-    <fade/>
+<transitionSet
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <slide xmlns:android="http://schemas.android.com/apk/res/android" android:slideEdge="bottom">
+        <targets>
+            <target android:excludeId="@android:id/statusBarBackground"/>
+            <target android:excludeId="@android:id/navigationBarBackground"/>
+        </targets>
+    </slide>
+    <fade />
+
 </transitionSet>

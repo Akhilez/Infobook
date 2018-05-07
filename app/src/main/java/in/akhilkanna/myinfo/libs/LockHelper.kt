@@ -132,7 +132,9 @@ class LockHelper(context: Context, private val lockLayout: View) {
         sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    fun handleOutsideTouch(event: MotionEvent): Boolean {
+    fun handleOutsideTouch(event: MotionEvent?): Boolean {
+        if (event == null) return true
+        if (!(event.action == MotionEvent.ACTION_DOWN && isExpanded())) return true
         val outRect = Rect()
         lockLayout.getGlobalVisibleRect(outRect)
         if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {

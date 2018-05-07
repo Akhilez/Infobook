@@ -16,12 +16,7 @@ import android.widget.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.layout_title.view.*
 import kotlinx.android.synthetic.main.pin_sheet.*
-import android.view.MenuInflater
-import android.view.ContextMenu.ContextMenuInfo
 import android.view.ContextMenu
-
-
-
 
 class MainActivity : AppCompatActivity(), LockHelper.PinListener {
 
@@ -33,8 +28,7 @@ class MainActivity : AppCompatActivity(), LockHelper.PinListener {
     private var pinReasonCode = ""
     private lateinit var menu: Menu
     private lateinit var recyclerView: RecyclerView
-    private lateinit var viewAdapter: MyAdapter
-    private lateinit var viewManager: RecyclerView.LayoutManager
+    private lateinit var viewAdapter: TitlesAdapter
     private lateinit var itemHelper: ItemTouchHelper
     private lateinit var titles: Array<Title>
 
@@ -74,18 +68,17 @@ class MainActivity : AppCompatActivity(), LockHelper.PinListener {
 
         titles = Title.getAll(this)
 
-        viewManager = LinearLayoutManager(this)
-        viewAdapter = MyAdapter(titles)
+        viewAdapter = TitlesAdapter(titles)
 
         recyclerView = titles_list as RecyclerView
 
         recyclerView.apply {
             setHasFixedSize(true)
-            layoutManager = viewManager
+            layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = viewAdapter
         }
 
-        val dragHelper = MyCallback(viewAdapter)
+        val dragHelper = MyCallback(viewAdapter, MyCallback.CallbackType.TITLE)
         itemHelper = ItemTouchHelper(dragHelper)
         itemHelper.attachToRecyclerView(recyclerView)
 
@@ -167,22 +160,20 @@ class MainActivity : AppCompatActivity(), LockHelper.PinListener {
         }
     }
 
+    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+        // close lock pins when touched anywhere else
+        if (!lockHelper.handleOutsideTouch(event))
+            return false
+        return super.dispatchTouchEvent(event)
+    }
+
     override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
         super.onCreateContextMenu(menu, v, menuInfo)
         titleClickedView = v
-        titleClicked = titles[v?.findViewById<TextView>(R.id.titleText)?.tag.toString().toInt()-1]
+        titleClicked = viewAdapter.getTitleFromView(titleClickedView)
         val inflater = menuInflater
         inflater.inflate(R.menu.menu_longpress, menu)
         Toast.makeText(this@MainActivity, "Created", Toast.LENGTH_SHORT).show()
-    }
-
-    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        // close lock pins when touched anywhere else
-        if (event?.action == MotionEvent.ACTION_DOWN)
-            if (lockHelper.isExpanded())
-                if (!lockHelper.handleOutsideTouch(event))
-                    return false
-        return super.dispatchTouchEvent(event)
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
@@ -192,7 +183,7 @@ class MainActivity : AppCompatActivity(), LockHelper.PinListener {
                 true
             }
             R.id.edit_menu -> {
-                viewAdapter.editAt(titleClickedView?.titleText?.tag.toString().toInt())
+                viewAdapter.editAt(titleClickedView)
                 true
             }
             R.id.copy_menu -> {
@@ -203,7 +194,7 @@ class MainActivity : AppCompatActivity(), LockHelper.PinListener {
         }
     }
 
-    inner class MyAdapter(private val titlesList: Array<Title>) : RecyclerView.Adapter<MyAdapter.ViewHolder>(), MyCallback.ActionCompletionContract {
+    inner class TitlesAdapter (private val titlesList: Array<Title>) : RecyclerView.Adapter<TitlesAdapter.ViewHolder>(), MyCallback.ActionCompletionContract {
 
         override fun onViewMoved(oldPosition: Int, newPosition: Int) {
             val temp = titlesList[oldPosition]
@@ -219,10 +210,8 @@ class MainActivity : AppCompatActivity(), LockHelper.PinListener {
             titlesList.forEach { it.commit(this@MainActivity) }
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val item = LayoutInflater.from(parent.context).inflate(R.layout.layout_title, parent, false) as RelativeLayout
-            return ViewHolder(item)
-        }
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+                ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_title, parent, false) as RelativeLayout)
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = holder.itemView
@@ -242,8 +231,8 @@ class MainActivity : AppCompatActivity(), LockHelper.PinListener {
 
         override fun getItemCount() = titlesList.size
 
-        fun editAt(id: Int){
-            val selected = titlesList.filter { id == it.id }[0]
+        fun editAt(titleView: View?){
+            val selected = getTitleFromView(titleView)
             this@MainActivity.titleClicked = selected
             if (selected.isProtected) {
                 pinReasonCode = "edit"
@@ -251,6 +240,11 @@ class MainActivity : AppCompatActivity(), LockHelper.PinListener {
             } else {
                 startEditActivity(selected)
             }
+        }
+
+        fun getTitleFromView(titleView: View?): Title {
+            val id = titleView?.titleText?.tag.toString().toInt()
+            return titlesList.filter { id == it.id }[0]
         }
 
         inner class ViewHolder(view: RelativeLayout) : RecyclerView.ViewHolder(view)
