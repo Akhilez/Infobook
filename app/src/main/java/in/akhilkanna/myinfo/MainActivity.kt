@@ -1,22 +1,25 @@
 package `in`.akhilkanna.myinfo
 
 import `in`.akhilkanna.myinfo.dataStructures.Title
+import `in`.akhilkanna.myinfo.libs.InfoAdapter
 import `in`.akhilkanna.myinfo.libs.LockHelper
 import `in`.akhilkanna.myinfo.libs.MyCallback
 import android.app.ActivityOptions
 import android.content.ComponentCallbacks2
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Vibrator
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.*
-import android.widget.*
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.layout_title.view.*
 import kotlinx.android.synthetic.main.pin_sheet.*
-import android.view.ContextMenu
+
 
 class MainActivity : AppCompatActivity(), LockHelper.PinListener {
 
@@ -57,9 +60,14 @@ class MainActivity : AppCompatActivity(), LockHelper.PinListener {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewAdapter.updateList(Title.getAll(this@MainActivity))
+    }
+
     override fun onBackPressed() {
         when {
-            lockHelper.isExpanded() -> lockHelper.closeSheet()
+            lockHelper.isExpanded() -> openPins(false)
             else -> super.onBackPressed()
         }
     }
@@ -78,7 +86,7 @@ class MainActivity : AppCompatActivity(), LockHelper.PinListener {
             adapter = viewAdapter
         }
 
-        val dragHelper = MyCallback(viewAdapter, MyCallback.CallbackType.TITLE)
+        val dragHelper = MyCallback(viewAdapter)
         itemHelper = ItemTouchHelper(dragHelper)
         itemHelper.attachToRecyclerView(recyclerView)
 
@@ -89,11 +97,11 @@ class MainActivity : AppCompatActivity(), LockHelper.PinListener {
     override fun pinSuccess() {
         when (pinReasonCode) {
             "edit" -> {
-                lockHelper.closeSheet()
+                openPins(false)
                 startEditActivity(titleClicked!!)
             }
             "open" -> {
-                lockHelper.closeSheet()
+                openPins(false)
                 if (!unlockAll)
                     unlockedTitles.add(titleClicked!!)
                 menu.findItem(R.id.lock_all_menu).isVisible = true
@@ -103,7 +111,11 @@ class MainActivity : AppCompatActivity(), LockHelper.PinListener {
     }
 
     override fun pinFailed() {
-        lockHelper.closeSheet()
+        openPins(false)
+        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (vibrator.hasVibrator()) {
+            vibrator.vibrate(50) // for 500 ms
+        }
     }
 
     private fun openItemsLayer(title: Title, transitionView: View) {
@@ -112,7 +124,7 @@ class MainActivity : AppCompatActivity(), LockHelper.PinListener {
         if (title.isProtected)
             if ((unlockAll && lockHelper.isLocked()) || (!unlockAll && !unlockedTitles.contains(title))) {
                 pinReasonCode = "open"
-                lockHelper.openSheet()
+                openPins(true)
                 return
             }
         val intent = Intent(this@MainActivity, ItemsActivity::class.java).apply {
@@ -170,7 +182,7 @@ class MainActivity : AppCompatActivity(), LockHelper.PinListener {
     override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
         super.onCreateContextMenu(menu, v, menuInfo)
         titleClickedView = v
-        titleClicked = viewAdapter.getTitleFromView(titleClickedView)
+        titleClicked = viewAdapter.getInfoFromView(titleClickedView) as Title
         val inflater = menuInflater
         inflater.inflate(R.menu.menu_longpress, menu)
         Toast.makeText(this@MainActivity, "Created", Toast.LENGTH_SHORT).show()
@@ -194,31 +206,36 @@ class MainActivity : AppCompatActivity(), LockHelper.PinListener {
         }
     }
 
-    inner class TitlesAdapter (private val titlesList: Array<Title>) : RecyclerView.Adapter<TitlesAdapter.ViewHolder>(), MyCallback.ActionCompletionContract {
-
-        override fun onViewMoved(oldPosition: Int, newPosition: Int) {
-            val temp = titlesList[oldPosition]
-            titlesList[oldPosition] = titlesList[newPosition]
-            titlesList[newPosition] = temp
-            notifyItemMoved(oldPosition, newPosition)
+    private fun openPins(open: Boolean) {
+        if (open) {
+            fab.hide()
+            lockHelper.openSheet()
+        } else {
+            lockHelper.closeSheet()
         }
+    }
+
+    override fun onCollapsed() {
+        super.onCollapsed()
+        fab.show()
+    }
+
+    inner class TitlesAdapter(titlesList: Array<Title>) : InfoAdapter(titlesList) {
 
         override fun itemDropped(holder: RecyclerView.ViewHolder?) {
             if (titleClickedView == null) return
             titleClickedView!!.handle.visibility = View.GONE
             notifyDataSetChanged()
-            titlesList.forEach { it.commit(this@MainActivity) }
+            infoList.forEach { it.commit(this@MainActivity) }
         }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-                ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_title, parent, false) as RelativeLayout)
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = holder.itemView
-            item.titleText.text = titlesList[position].title
-            item.titleText.tag = titlesList[position].id
+            val titleObj = infoList[position] as Title
+            item.titleText.text = titleObj.title
+            item.tag = titleObj.id
             item.setOnClickListener {
-                openItemsLayer(titlesList[position], holder.itemView.titleText)
+                openItemsLayer(titleObj, holder.itemView.titleText)
             }
             item.handle.setOnTouchListener { _: View, event ->
                 if (event.actionMasked == MotionEvent.ACTION_DOWN) {
@@ -229,25 +246,16 @@ class MainActivity : AppCompatActivity(), LockHelper.PinListener {
             this@MainActivity.registerForContextMenu(item)
         }
 
-        override fun getItemCount() = titlesList.size
-
         fun editAt(titleView: View?){
-            val selected = getTitleFromView(titleView)
+            val selected = getInfoFromView(titleView) as Title
             this@MainActivity.titleClicked = selected
             if (selected.isProtected) {
                 pinReasonCode = "edit"
-                lockHelper.openSheet()
+                openPins(true)
             } else {
                 startEditActivity(selected)
             }
         }
-
-        fun getTitleFromView(titleView: View?): Title {
-            val id = titleView?.titleText?.tag.toString().toInt()
-            return titlesList.filter { id == it.id }[0]
-        }
-
-        inner class ViewHolder(view: RelativeLayout) : RecyclerView.ViewHolder(view)
 
     }
 

@@ -23,10 +23,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="1dp"
+                android:paddingStart="@dimen/text_margin"
                 android:padding="10dp"
                 android:text="abcd"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/colorAccent"
                 android:textSize="14sp" />
 
             <ImageView
@@ -34,8 +34,8 @@
                 android:layout_width="24dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
                 android:layout_marginEnd="14dp"
+                android:contentDescription="SHOW"
                 android:src="@drawable/ic_visibility_white_24dp"
                 android:tint="@color/colorPrimaryDark"
                 android:visibility="gone" />
@@ -48,6 +48,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="14dp"
                 android:visibility="gone"
+                android:contentDescription="MOVE"
                 android:src="@drawable/ic_drag_handle_white_24dp" />
 
         </RelativeLayout>
@@ -57,8 +58,8 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#000000"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
             android:alpha="0.05"
             card_view:layout_constraintTop_toBottomOf="@+id/relativeLayout"
             card_view:layout_constraintStart_toStartOf="parent"
@@ -68,12 +69,12 @@
             android:id="@+id/valueText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingStart="@dimen/text_margin"
             android:padding="15dp"
             android:text="abcd"
-            card_view:layout_constraintStart_toStartOf="parent"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/colorPrimary"
             android:textSize="18sp"
-            android:layout_marginStart="10dp"
+            card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@+id/divider" />
 
 

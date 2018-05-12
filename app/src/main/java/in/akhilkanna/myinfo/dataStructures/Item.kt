@@ -3,15 +3,15 @@ package `in`.akhilkanna.myinfo.dataStructures
 import `in`.akhilkanna.myinfo.db.SqliteHelper
 import android.content.Context
 
-class Item(val id: Int, val title: Title, var key: String, var value: String, var hidden: Boolean) {
+class Item(id: Int, val title: Title, var key: String, var value: String, var hidden: Boolean) : Info(id) {
 
-    fun commit(context: Context?) = SqliteHelper(context!!).updateRow(
+    override fun commit(context: Context?) = SqliteHelper(context!!).updateRow(
             TABLE_NAME,
             hashMapOf(DESC to "\"" + key + "\"", VALUE to "\"" + value + "\"", HIDDEN to (if (hidden) 1 else 0).toString()),
             ID, id.toString()
     )
 
-    fun delete(context: Context?) = SqliteHelper(context!!).deleteRow(TABLE_NAME, ID, id.toString())
+    override fun delete(context: Context?) = SqliteHelper(context!!).deleteRow(TABLE_NAME, ID, id.toString())
 
     companion object {
         const val TABLE_NAME = "item"

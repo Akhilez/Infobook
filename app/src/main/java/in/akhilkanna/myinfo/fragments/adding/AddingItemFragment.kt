@@ -71,10 +71,11 @@ class AddingItemFragment : Fragment() {
     private fun createItem() {
         val newItem = Item.create(context, title!!, item_key_edit_text.text.toString(), item_value_edit_text.text.toString(), hide_switch.isChecked)
         if (newItem == null) {
-            Snackbar.make(rootView!!, "Failed", Snackbar.LENGTH_LONG).show()
+            return Snackbar.make(rootView!!, "Failed", Snackbar.LENGTH_LONG).show()
         } else {
             Snackbar.make(rootView!!, "Added Successfully", Snackbar.LENGTH_LONG).show()
             // TODO success, so go to main activity
+            activity?.finish()
         }
     }
 

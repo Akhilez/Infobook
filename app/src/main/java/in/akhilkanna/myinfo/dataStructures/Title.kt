@@ -3,9 +3,9 @@ package `in`.akhilkanna.myinfo.dataStructures
 import `in`.akhilkanna.myinfo.db.SqliteHelper
 import android.content.Context
 
-class Title(val id: Int, var title: String, var isProtected: Boolean) {
+class Title(id: Int, var title: String, var isProtected: Boolean) : Info(id) {
 
-    fun commit(context: Context?): Boolean {
+    override fun commit(context: Context?): Boolean {
         return SqliteHelper(context!!).updateRow(
                 TABLE_NAME,
                 hashMapOf(TITLE to "\"" + title+ "\"", PROTECTED to (if (isProtected) 1 else 0).toString()),
@@ -13,7 +13,7 @@ class Title(val id: Int, var title: String, var isProtected: Boolean) {
         )
     }
 
-    fun delete(context: Context?): Boolean {
+    override fun delete(context: Context?): Boolean {
         return SqliteHelper(context!!).deleteRow(TABLE_NAME, ID, id.toString())
     }
 

@@ -20,6 +20,8 @@
         <item name="android:windowSharedElementEnterTransition">@transition/change_bounds</item>
         <item name="android:windowSharedElementExitTransition">@transition/change_bounds</item>
 
+        <item name="android:windowBackground">@color/colorPrimaryDark</item>
+
     </style>
 
     <style name="AppTheme.NoActionBar">

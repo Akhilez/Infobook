@@ -2,11 +2,11 @@ package `in`.akhilkanna.myinfo
 
 import `in`.akhilkanna.myinfo.dataStructures.Item
 import `in`.akhilkanna.myinfo.dataStructures.Title
+import `in`.akhilkanna.myinfo.libs.InfoAdapter
 import `in`.akhilkanna.myinfo.libs.MyCallback
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
@@ -51,7 +51,6 @@ class ItemsActivity : AppCompatActivity() {
 
     private fun buildItemsList() {
         setTitle(title.title)
-        titleText.text = title.title
         items = Item.getItems(this@ItemsActivity, title)
 
         viewAdapter = ItemsAdapter(items)
@@ -64,7 +63,7 @@ class ItemsActivity : AppCompatActivity() {
             adapter = viewAdapter
         }
 
-        val dragHelper = MyCallback(viewAdapter, MyCallback.CallbackType.ITEM)
+        val dragHelper = MyCallback(viewAdapter)
         itemHelper = ItemTouchHelper(dragHelper)
         itemHelper.attachToRecyclerView(recyclerView)
 
@@ -73,7 +72,7 @@ class ItemsActivity : AppCompatActivity() {
     override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
         super.onCreateContextMenu(menu, v, menuInfo)
         itemClickedView = v
-        itemClicked = viewAdapter.getTitleFromView(itemClickedView)
+        itemClicked = viewAdapter.getInfoFromView(itemClickedView) as Item
         val inflater = menuInflater
         inflater.inflate(R.menu.menu_longpress, menu)
 
@@ -97,16 +96,11 @@ class ItemsActivity : AppCompatActivity() {
         }
     }
 
-    inner class ItemsAdapter (private val itemsList: Array<Item>) : RecyclerView.Adapter<ItemsAdapter.ViewHolder>(), MyCallback.ActionCompletionContract {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-                ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_item, parent, false) as CardView)
-
-        override fun getItemCount() = itemsList.size
+    inner class ItemsAdapter(itemsList: Array<Item>) : InfoAdapter(itemsList) {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val itemView = holder.itemView
-            val item = itemsList[position]
+            val item = infoList[position] as Item
             itemView.keyText.text = item.key
             itemView.valueText.text = item.value
             itemView.tag = item.id
@@ -136,43 +130,28 @@ class ItemsActivity : AppCompatActivity() {
                 }
                 false
             }
-            itemView.hideButton?.setOnDragListener { myView: View?, dragEvent: DragEvent? ->
+            itemView.hideButton?.setOnDragListener { _: View?, _: DragEvent? ->
                 itemView.valueText.visibility = View.GONE
                 false
             }
             this@ItemsActivity.registerForContextMenu(itemView)
         }
 
-        override fun onViewMoved(oldPosition: Int, newPosition: Int) {
-            val temp = itemsList[oldPosition]
-            itemsList[oldPosition] = itemsList[newPosition]
-            itemsList[newPosition] = temp
-
-            notifyItemMoved(oldPosition, newPosition)
-        }
-
         override fun itemDropped(holder: RecyclerView.ViewHolder?) {
             if (itemClickedView == null) return
             itemClickedView!!.handle.visibility = View.GONE
             notifyDataSetChanged()
-            itemsList.forEach { it.commit(this@ItemsActivity) }
+            infoList.forEach { it.commit(this@ItemsActivity) }
         }
 
         fun editAt(itemView: View?){
-            val selected = getTitleFromView(itemView)
-            this@ItemsActivity.itemClicked = selected
+            val selected = getInfoFromView(itemView)
+            this@ItemsActivity.itemClicked = selected as Item
             val intent = Intent(this@ItemsActivity, AddingActivity::class.java)
             intent.putExtra("editingItem", selected.id)
             intent.putExtra("title", title.id)
             startActivity(intent)
         }
-
-        fun getTitleFromView(itemView: View?): Item {
-            val id = itemView?.tag.toString().toInt()
-            return itemsList.filter { id == it.id }[0]
-        }
-
-        inner class ViewHolder(view: CardView) : RecyclerView.ViewHolder(view)
     }
 
 

@@ -2,7 +2,7 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="pin_dot_width">24dp</dimen>
     <dimen name="app_bar_height">180dp</dimen>
-    <dimen name="text_margin">16dp</dimen>
+    <dimen name="text_margin">24dp</dimen>
     <dimen name="actionbar_size">56dp</dimen>
     <dimen name="card_margin_horizontal">5dp</dimen>
 </resources>
