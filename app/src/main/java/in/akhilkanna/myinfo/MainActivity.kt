@@ -1,10 +1,14 @@
 package `in`.akhilkanna.myinfo
 
 import `in`.akhilkanna.myinfo.dataStructures.Title
+import `in`.akhilkanna.myinfo.db.TitleEnt
 import `in`.akhilkanna.myinfo.libs.InfoAdapter
 import `in`.akhilkanna.myinfo.libs.LockHelper
 import `in`.akhilkanna.myinfo.libs.MyCallback
+import `in`.akhilkanna.myinfo.libs.TitleViewModel
 import android.app.ActivityOptions
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.ComponentCallbacks2
 import android.content.Context
 import android.content.Intent
@@ -35,11 +39,14 @@ class MainActivity : AppCompatActivity(), LockHelper.PinListener {
     private lateinit var itemHelper: ItemTouchHelper
     private lateinit var titles: Array<Title>
 
+    private lateinit var titleViewModel: TitleViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-        title = ""
+
+        titleViewModel = ViewModelProviders.of(this@MainActivity).get(TitleViewModel::class.java)
 
         unlockAll = getUnlockMode()
 
@@ -73,6 +80,12 @@ class MainActivity : AppCompatActivity(), LockHelper.PinListener {
     }
 
     private fun setUpLayout() {
+
+        titleViewModel.allTitles?.observe(this@MainActivity, Observer<List<TitleEnt>> {
+            if (it != null) {
+                viewAdapter.setTitles(it)
+            }
+        })
 
         titles = Title.getAll(this)
 
@@ -221,6 +234,12 @@ class MainActivity : AppCompatActivity(), LockHelper.PinListener {
     }
 
     inner class TitlesAdapter(titlesList: Array<Title>) : InfoAdapter(titlesList) {
+
+        fun setTitles(list: List<TitleEnt>) {
+            // TODO update list
+            // infoList = list
+            notifyDataSetChanged()
+        }
 
         override fun itemDropped(holder: RecyclerView.ViewHolder?) {
             if (titleClickedView == null) return

@@ -34,6 +34,7 @@ class Title(id: Int, var title: String, var isProtected: Boolean) : Info(id) {
         const val ID = "id"
         const val TITLE = "title"
         const val PROTECTED = "protected"
+        const val DATABASE_NAME = "info"
 
         fun get(context: Context?, id: Int): Title? {
             val helper = SqliteHelper(context!!)
